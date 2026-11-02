@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="docs/images/project-banner.svg" alt="AI + Power Electronics Platform — 智能控制与状态监测" width="100%" />
-
 # AI + Power Electronics Platform
 
 **脉冲平抑系统强瞬变电流高精度跟踪控制与电容阵列单体参数辨识**
@@ -241,7 +239,7 @@ AI-Power-Electronics-Platform/
 │  └─ Simulink/                 # 仿真模型
 ├─ firmware/                    # 配套 CCS 控制工程
 ├─ wheels/                      # Windows / Python 3.10 离线基础依赖
-├─ docs/images/                 # 项目首页视觉与真实界面预览
+├─ docs/images/                 # 真实界面预览
 └─ .vscode/                     # 可共享的启动与调试配置
 ```
 
