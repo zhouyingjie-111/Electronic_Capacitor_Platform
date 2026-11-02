@@ -59,3 +59,13 @@ class ConfigurationTests(unittest.TestCase):
             "/api/db/cleanup/scan",
         ):
             self.assertEqual(app.test_client().post(route, json=[1]).status_code, 400)
+
+
+class ConsoleEncodingTests(unittest.TestCase):
+    def test_english_windows_console_is_reconfigured(self):
+        import subprocess
+        root = Path(__file__).resolve().parents[2]
+        script = "import sys; sys.stdout.reconfigure(encoding='cp1252'); import settings; settings.configure(); print('网页启动检查')"
+        result = subprocess.run([sys.executable, '-c', script], cwd=root, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('网页启动检查', result.stdout.decode('utf-8'))

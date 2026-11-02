@@ -6,6 +6,7 @@ and are deliberately absent from configuration and the source release.
 
 import json
 import os
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -71,6 +72,12 @@ def load_config(root=ROOT, environment=None):
 
 def configure():
     """在导入业务服务前调用；环境优先级在 load_config 中统一处理。"""
+    # PYTHONIOENCODING set after process startup does not change existing
+    # streams. Reconfigure them for English Windows/CI terminals as well.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8", errors="backslashreplace")
     os.environ.update(load_config())
     os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
     os.environ.setdefault("PYTHONIOENCODING", "utf-8")
