@@ -1,6 +1,8 @@
 # Cross-platform text checkout; Windows launch scripts retain CRLF.
 * text=auto eol=lf
 *.bat text eol=crlf
+# Preserve raw measurement bytes and saved dataset SHA-256 fingerprints.
+*.csv -text
 *.png binary
 *.jpg binary
 *.jpeg binary
