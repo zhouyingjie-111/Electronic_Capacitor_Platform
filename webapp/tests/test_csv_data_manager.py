@@ -19,7 +19,8 @@ class CSVDataManagerTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        # Windows temp paths may use an 8.3 alias; compare canonical paths.
+        self.root = Path(self.temp.name).resolve()
         for name in ("InputData", "OutputData", "Code"):
             (self.root / name).mkdir()
         self.path = self.root / "InputData/sample.csv"

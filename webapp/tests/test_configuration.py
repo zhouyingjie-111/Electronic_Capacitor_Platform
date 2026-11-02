@@ -14,7 +14,8 @@ class ConfigurationTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        # Windows temp paths may use an 8.3 alias; compare canonical paths.
+        self.root = Path(self.temp.name).resolve()
 
     def write(self, value):
         (self.root / "config.json").write_text(json.dumps(value), encoding="utf-8")
