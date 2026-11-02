@@ -1,0 +1,11 @@
+<nav class="page-nav" aria-label="项目导航">
+  <a class="return-home" href="/"><span class="return-home-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6-6 6 6 6M4 12h16"/></svg></span><span>返回主界面</span></a>
+  <div class="module-nav" role="group" aria-label="功能切换">
+    {% for card in project_cards %}
+    <a class="module-link{% if page is defined and page == card.key %} active{% endif %}" href="{% if card.key == 'chat' %}{{ chat_url }}{% else %}{{ url_for('project.page', page=card.key) }}{% endif %}" {% if page is defined and page == card.key %}aria-current="page"{% endif %}>
+      <svg class="module-icon" aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{% if card.key == 'tracking' %}<path d="M3 13h4l2-8 4 14 2-8h6"/>{% elif card.key == 'capacitance' %}<path d="M3 12h6m0-6v12m6-12v12m0-6h6"/>{% else %}<path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a9 9 0 0 1 18 0Z"/><path d="M7 11h.01M11 11h.01M15 11h.01"/>{% endif %}</svg>
+      <span>{{ card.nav_title }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</nav>

@@ -1,0 +1,37 @@
+{% set scope = ai_scope|default(page) %}
+<div class="ai-workbench" data-ai-scope="{{ scope }}">
+  <div class="ai-connection-bar"><div class="ai-workbench-brand"><span class="ai-workbench-mark" aria-hidden="true">AI</span><div><strong>{{ {'general':'电力电子专家','tracking':'智能控制助手','capacitance':'电容辨识助手'}.get(scope,'智能对话') }}</strong><span class="ai-connection-state" id="ai-connection-state">连接模型，开始交流</span></div></div><div class="ai-connection-actions"><button class="btn" type="button" id="ai-settings" hidden>模型设置</button><button class="btn" type="button" id="ai-disconnect" hidden>断开连接</button></div></div>
+  <section class="ai-access" id="ai-access" aria-label="模型连接设置">
+    <div class="ai-access-heading"><span class="ai-access-step" id="ai-access-step">01 / 连接服务商</span><h3 id="ai-access-title">使用你的 API Key</h3><p>对话与附件自动保存在本机，使用相同密钥可恢复。密钥本身仅存于会话内存中。</p></div>
+    <form id="ai-key-form" class="ai-access-form">
+      <div class="ai-form-field"><label for="ai-provider">服务商</label><select id="ai-provider"><option value="deepseek">DeepSeek</option><option value="doubao">豆包 · 火山方舟</option><option value="kimi">Kimi · 月之暗面</option><option value="qwen">千问 · 阿里云百炼</option></select></div>
+      <div class="ai-form-field" id="ai-kimi-region-field" hidden><label for="ai-kimi-region">Kimi 平台</label><select id="ai-kimi-region"><option value="cn">国内平台</option><option value="intl">国际平台</option></select></div>
+      <div id="ai-qwen-settings" hidden><div class="ai-form-field"><label for="ai-qwen-region">百炼地域</label><select id="ai-qwen-region"><option value="cn-beijing">华北2（北京）</option><option value="ap-southeast-1">新加坡</option><option value="us-east-1">美国（弗吉尼亚）</option><option value="cn-hongkong">中国香港</option><option value="ap-northeast-1">日本（东京）</option><option value="eu-central-1">德国（法兰克福）</option></select></div><div class="ai-form-field"><label for="ai-qwen-workspace">业务空间 ID（可选）</label><input id="ai-qwen-workspace" placeholder="填写后使用该业务空间的官方专属域名" maxlength="64" autocomplete="off"></div><p class="ai-help">使用所选地域的按量付费 API Key。东京、法兰克福需填写业务空间 ID。</p></div>
+      <div class="ai-form-field"><label for="ai-key">API Key</label><div class="ai-key-entry"><input id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴所选服务商的 API Key" maxlength="512" required><button class="btn" type="button" id="ai-key-visibility" aria-label="显示密钥">显示</button></div></div>
+      <div class="ai-access-actions"><a id="ai-key-help" href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">获取 API Key ↗</a><button class="btn btn-primary" type="submit" id="ai-connect">下一步 · 选择模型</button></div>
+    </form>
+    <form id="ai-model-form" class="ai-access-form" hidden>
+      <div class="ai-form-field"><label for="ai-model">模型版本</label><div class="ai-model-picker"><select id="ai-model"></select><button class="btn" id="ai-refresh-models" type="button">刷新列表</button></div></div>
+      <p id="ai-model-capabilities" class="ai-help"></p>
+      <div id="ai-custom-model" hidden><div class="ai-form-field"><label for="ai-custom-id">模型 ID / 推理接入点 ID</label><input id="ai-custom-id" placeholder="输入服务商提供的完整模型 ID" maxlength="120"></div><div class="ai-options"><label><input id="ai-custom-vision" type="checkbox">支持图片</label><label><input id="ai-custom-thinking" type="checkbox">支持深度思考</label><label><input id="ai-custom-tools" type="checkbox">支持工具调用</label></div><p class="ai-help">按模型实际能力勾选，权限仍由服务商验证。</p></div>
+      <p class="ai-help" id="ai-model-note"></p>
+      <div class="ai-access-actions"><button class="btn" type="button" id="ai-change-provider">更换服务商或密钥</button><button class="btn btn-primary" type="submit" id="ai-select-model">验证并进入对话</button></div>
+    </form>
+    <p class="ai-feedback" id="ai-auth-feedback" role="status"></p>
+  </section>
+  <section class="ai-chat-shell" id="ai-chat-shell" aria-label="智能对话" hidden>
+    <div class="ai-legacy-notice" id="ai-legacy-notice" hidden><span id="ai-legacy-text"></span><button class="btn" type="button" id="ai-restore-legacy">恢复更新前记录</button></div>
+    <div class="ai-conversation-toolbar"><select id="ai-history" aria-label="历史会话"><option value="">当前会话</option></select><div><button class="btn" type="button" id="ai-new-thread">新对话</button><button class="btn" type="button" id="ai-export">导出对话</button><button class="btn" type="button" id="ai-clear">清空</button></div></div>
+    <div class="ai-storage-line"><span id="ai-storage-state" role="status">对话自动保存在本机</span><button type="button" id="ai-follow-latest" hidden>回到最新</button></div>
+    <div class="ai-messages" id="ai-messages" role="log" aria-live="off" tabindex="0"></div>
+    <div class="ai-suggestions" id="ai-suggestions" aria-label="建议问题"></div>
+    <form class="ai-composer" id="ai-composer">
+      <div class="ai-attachments" id="ai-attachments" aria-label="待发送附件"></div>
+      <label class="ai-editor-label" for="ai-message">输入问题</label><textarea id="ai-message" rows="3" maxlength="30000" placeholder="输入问题，可粘贴图片和文件，或拖拽附件到这里。"></textarea>
+      <div class="ai-options"><label><input type="checkbox" id="ai-thinking" checked>深度思考</label><label title="{% if scope == 'general' %}允许工程计算、文件分析、打开空白模型与创建标准控制或电路平均模型。{% elif scope == 'capacitance' %}允许工程计算、文件分析、打开电容辨识工作区与创建独立标准模型。{% else %}允许工程计算、文件分析、打开快速追踪模型与创建独立标准模型；仿真运行另有确认卡。{% endif %}"><input type="checkbox" id="ai-tools">本机工具辅助</label><label title="本轮主动把当前串口监测快照发送给所选服务商。"><input type="checkbox" id="ai-share-data">附带监测快照</label></div>
+      <div class="ai-composer-actions"><div><button class="btn" type="button" id="ai-add-file">＋ 添加附件</button><input type="file" id="ai-file-input" accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.docx,.xlsx,.csv,.txt,.md,.json,.py,.m,.c,.h,.cpp,.hpp,.log,.xml,.yaml,.yml,.ini,.toml,.v,.sv,.tex,.slx" multiple hidden><span>Enter 发送 · Shift + Enter 换行</span></div><div><button class="btn" type="button" id="ai-stop" hidden>停止生成</button><button class="btn btn-primary" type="submit" id="ai-send">发送</button></div></div>
+      <p class="ai-feedback" id="ai-chat-feedback" role="status"></p>
+    </form>
+    <div class="ai-bottom-note"><span>内容与附件将在点击发送后交给当前服务商；本机工具结果会用于本轮回答。</span><details><summary>附件与保存说明</summary><p>每个附件不超过8 MB，每轮最多6个、合计不超过20 MB。支持图片、PDF、DOCX、XLSX、CSV、文本、代码和SLX。PDF仅提取文字，图表请另贴截图；大文件会提示截取。图片需要视觉模型。浏览器无法读取复制文件时，可拖拽或选择文件。</p><p>对话按密钥、服务商、模型和功能分别保存；重新连接相同密钥并选择原模型可恢复，断开连接不会删除历史。“清空”会删除当前对话及其专属文件。可要求生成 DOCX、XLSX、PDF、CSV 或文本文件，也可下载单条回答。DOCX/PDF采用基本正文与标题排版，公式保留为文本。</p><p>推理区显示接口实际返回的内容或摘要。接口调用按服务商规则计费；豆包、千问及自定义 DeepSeek 模型验证会发送简短测试请求。</p></details></div>
+  </section>
+</div>

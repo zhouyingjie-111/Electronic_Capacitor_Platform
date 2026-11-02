@@ -1,0 +1,58 @@
+<details class="panel simulation-reference cap-workbench" id="cap-training">
+  <summary><span class="simulation-reference-title">模型训练</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+    <form id="cap-training-form">
+      <div class="ann-controls">
+        <div class="ann-field"><label for="cap-dataset-source">训练数据</label><select id="cap-dataset-source"><option value="default">默认示波器数据集</option><option value="upload">上传示波器数据 ZIP</option></select></div>
+        <div class="ann-field" id="cap-dataset-file-field" hidden><label for="cap-dataset-file">选择数据文件</label><input id="cap-dataset-file" type="file" accept=".zip"></div>
+        <button class="btn" id="cap-prepare" type="button">数据预处理</button><button class="btn-primary" id="cap-start" type="submit">开始训练</button><button class="btn" id="cap-stop" type="button" hidden>停止任务</button>
+      </div>
+      <details class="ann-file-notes"><summary>数据文件要求</summary><p>上传 ZIP，最大 200 MB。每组须包含 tek组号CH1-10ms.csv、tek组号CH3-10ms.csv、tek组号CH4-10ms.csv，保留示波器的 TIME、Sample Interval、Record Length 和单位表头。CH1 为电压 / V，CH3、CH4 为电流 / A。</p><p>4ms 文件可一并上传，仅参与审计。组号 0000、0001、0100 默认使用下方标签；其他组号须提供 labels.json，格式为 {"组号":[C1,C2,C3,C4,ESR1,ESR2,ESR3,ESR4]}，容值单位 μF，ESR 单位 Ω。</p></details>
+    </form>
+    <p class="feedback" id="cap-feedback" role="status"></p>
+    <div class="ann-log-header"><h4>运行日志</h4><span id="cap-stage" role="status">等待开始</span></div>
+    <pre class="ann-log" id="cap-log" tabindex="0" aria-label="电容辨识运行日志">选择数据后进行预处理或开始训练。</pre>
+    <div class="cap-prepare-output" id="cap-prepared" hidden>
+      <div class="panel-header"><h4>预处理结果</h4><a class="btn" id="cap-prepare-download">下载预处理结果</a></div>
+      <div class="dataset-split" id="cap-splits"></div>
+      <div class="cap-preview-heading"><label for="cap-image-group">采集组号</label><select id="cap-image-group"></select><span>Haar 能量灰度输入</span></div>
+      <div class="cap-feature-grid" id="cap-feature-images"></div>
+    </div>
+  </div>
+</details>
+<details class="panel simulation-reference cap-workbench" id="cap-compilation">
+  <summary><span class="simulation-reference-title">模型编译</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+    <div class="ann-compile-controls">
+<div class="ann-controls">
+        <div class="ann-field"><label for="cap-model-source">编译输入</label><select id="cap-model-source"><option value="latest">使用最近一次训练输出</option><option value="upload">上传模型结果 ZIP</option></select></div>
+        <div class="ann-field" id="cap-model-file-field" hidden><label for="cap-model-file">选择模型结果</label><input id="cap-model-file" type="file" accept=".zip"></div>
+        <button class="btn" type="button" id="cap-compile" disabled>核验并编译</button>
+      </div>
+      <details class="ann-file-notes"><summary>模型文件要求</summary><p>默认使用训练输出，无需填写路径。也可上传本页面下载的模型结果 ZIP（最大 100 MB），须包含 weights.npz 与 golden_vectors.npz。采用 float32，输入为 6 × 32 × 3 灰度张量，输出为四个容值与四个 ESR。</p><p>编译时校验权重与核验样本，使用配套推理代码重新生成模型库。下载包包含模型库、C 源码、头文件及核验记录。</p></details>
+    </div>
+    <p class="feedback" id="cap-compile-feedback" role="status" aria-live="polite"></p>
+    <div class="ann-log-header"><h4>编译日志</h4><span id="cap-compile-stage" role="status">等待开始</span></div>
+    <pre class="ann-log" id="cap-compile-log" tabindex="0" aria-label="电容模型编译日志"></pre>
+    <div class="ann-compile-actions"><a class="btn ann-compile-download" id="cap-compile-download" hidden>下载编译结果</a></div>
+  </div>
+</details>
+<details class="panel simulation-reference" id="cap-model-results">
+  <summary><span class="simulation-reference-title">已保存的模型结果</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+    <div class="panel-header"><h4>八参数预测结果</h4><a class="btn" id="cap-model-download" hidden>下载模型</a></div>
+    <p class="ann-help">同次采集时间段测试；P1、P3 为固定参考值。</p>
+    <div class="table-wrap"><table><thead><tr><th>参数</th><th>单位</th><th>平均相对误差 / %</th><th>RMSE</th><th>R²</th><th>说明</th></tr></thead><tbody id="cap-metrics"><tr><td colspan="6">训练完成后显示结果。</td></tr></tbody></table></div>
+    <div class="cap-preview-heading"><label for="cap-result-target">显示参数</label><select id="cap-result-target">{% for name in ['C1_uF','C2_uF','C3_uF','C4_uF','ESR1_Ohm','ESR2_Ohm','ESR3_Ohm','ESR4_Ohm'] %}<option value="{{ name }}" {% if name == 'C2_uF' %}selected{% endif %}>{{ name }}</option>{% endfor %}</select></div>
+    <div class="figure-grid cap-result-figures" id="cap-result-figures"></div><div class="cap-loss-figure" id="cap-loss-figure"></div>
+  </div>
+</details>
+<details class="panel simulation-reference data-preview" id="cap-data-preview">
+  <summary><span class="simulation-reference-title">数据文件与样本预览</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+    <div class="table-wrap cap-file-table" tabindex="0"><table><thead><tr><th>文件</th><th>组号</th><th>通道</th><th>观察窗口</th><th>采样间隔 / μs</th><th>表头记录点数</th><th>用途</th></tr></thead><tbody id="cap-files">{% for file in cap_summary.files %}<tr><td>{{ file.name }}</td><td>{{ file.group }}</td><td>{{ file.channel }}</td><td>{{ file.view }}</td><td>{{ file.dt_us }}</td><td>{{ file.declared_samples }}</td><td>{{ file.use }}</td></tr>{% endfor %}</tbody></table></div>
+    <h4>组号与参数标签</h4><div class="table-wrap"><table><thead><tr><th>组号</th><th>C1 / μF</th><th>C2 / μF</th><th>C3 / μF</th><th>C4 / μF</th><th>ESR1 / Ω</th><th>ESR2 / Ω</th><th>ESR3 / Ω</th><th>ESR4 / Ω</th></tr></thead><tbody id="cap-labels">{% for group,values in cap_summary.labels.items() %}<tr><td>{{ group }}</td>{% for value in values %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+    <div class="cap-preview-heading"><label for="cap-preview-file">数据文件</label><select id="cap-preview-file">{% for file in cap_summary.files %}<option value="{{ file.name }}">{{ file.name }}</option>{% endfor %}</select></div>
+    <p class="preview-label">展示前8行</p><div class="table-wrap"><table><thead id="cap-sample-head"><tr>{% for column in cap_summary.columns %}<th>{{ column }}</th>{% endfor %}</tr></thead><tbody id="cap-samples">{% for row in cap_summary.rows %}<tr>{% for value in row %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+  </div>
+</details>

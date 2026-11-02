@@ -1,0 +1,8 @@
+# Website only. Training frameworks and TI/MATLAB tools are optional.
+Flask==3.1.1
+waitress==3.0.2
+httpx==0.28.1
+Pillow==11.3.0
+pyserial==3.5
+# Saved Simulink waveform reading uses NumPy memmap/decimation in the server.
+numpy==1.26.4

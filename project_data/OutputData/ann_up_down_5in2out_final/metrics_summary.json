@@ -1,0 +1,75 @@
+{
+    "model": {
+        "name": "ann_up_down_5in2out",
+        "format": "pytorch_ann_portable_hdf5_v1",
+        "input_columns": [
+            "P_peak",
+            "T_rise_fall",
+            "VC1",
+            "VG1",
+            "direction_state"
+        ],
+        "output_columns": [
+            "DTgiven",
+            "DSsample"
+        ],
+        "hidden_dims": [
+            48,
+            48,
+            24
+        ],
+        "dropout": 0.05,
+        "cpu_dsp_deployment": true,
+        "npu_used": false
+    },
+    "data_split": {
+        "train_samples": 78,
+        "validation_samples": 16,
+        "test_samples": 18,
+        "train_ratio": 0.7,
+        "validation_ratio": 0.15,
+        "test_ratio": 0.15
+    },
+    "training": {
+        "best_seed": 142,
+        "best_epoch": 433,
+        "actual_epochs": 1133,
+        "stopped_early": true,
+        "best_validation_scaled_mse": 0.03053373284637928
+    },
+    "onnx_verification": {
+        "enabled": true,
+        "performed": true,
+        "core_max_abs_error": 1.1920928955078125e-07,
+        "full_max_abs_error": 5.960464477539063e-08,
+        "passed": true
+    },
+    "test_metrics": {
+        "DTgiven": {
+            "samples": 18,
+            "mae": 0.012570379172555275,
+            "mse": 0.00021602411526586585,
+            "max_absolute_error": 0.025491129606962204,
+            "r2": 0.9948647444029675,
+            "average_prediction_error_percent": 12.936832224422938,
+            "maximum_prediction_error_percent": 66.98498754588897,
+            "minimum_prediction_error_percent": 0.014588502450642233,
+            "percentage_error_valid_samples": 18,
+            "percentage_error_excluded_near_zero_samples": 0,
+            "percentage_error_denominator_tolerance": 1e-10
+        },
+        "DSsample": {
+            "samples": 18,
+            "mae": 0.028204519715574052,
+            "mse": 0.0010381618080502937,
+            "max_absolute_error": 0.057622045278549194,
+            "r2": 0.9539024743603611,
+            "average_prediction_error_percent": 12.39755389070745,
+            "maximum_prediction_error_percent": 49.31159296499153,
+            "minimum_prediction_error_percent": 1.7877080162915182,
+            "percentage_error_valid_samples": 15,
+            "percentage_error_excluded_near_zero_samples": 3,
+            "percentage_error_denominator_tolerance": 1e-10
+        }
+    }
+}

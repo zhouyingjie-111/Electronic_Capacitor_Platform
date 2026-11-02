@@ -1,0 +1,30 @@
+# Local state, keys and private conversations
+/config.json
+.env
+.env.*
+!.env.example
+.venv/
+**/runtime/
+**/__pycache__/
+*.py[cod]
+*.secret
+*.db
+*.sqlite*
+uploads/
+# IDE and generated controller/simulation outputs
+.idea/
+.DS_Store
+Thumbs.db
+**/CPU1_FLASH/
+**/CPU1_RAM/
+**/Debug/
+**/Release/
+**/slprj/
+**/*.slxc
+*.log
+*.obj
+*.out
+*.map
+*.zip
+verification-local/
+# Keep default data and prebuilt model libraries needed by the source project.

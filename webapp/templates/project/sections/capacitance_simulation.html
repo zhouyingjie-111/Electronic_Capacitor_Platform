@@ -1,0 +1,25 @@
+<section class="panel" id="capacitance-simulation">
+  <h3>仿真验证</h3>
+  <form id="simulation-form" class="simulation-form" data-module="capacitance">
+    <div class="simulation-form-controls">
+      <input id="simulation-type" type="hidden" value="capacitance">
+      <div class="simulation-field simulation-duration-field" id="simulation-duration-field" hidden><label for="simulation-duration">仿真时长 / s</label><input id="simulation-duration" type="number" min="0.0000001" step="any" value="0.1" required disabled aria-describedby="simulation-description"></div>
+      <button class="btn-primary" id="simulation-start" type="submit" disabled>开始仿真</button>
+    </div>
+    <div id="simulation-parameters" hidden>
+      <div class="simulation-parameter-grid">
+        <div class="simulation-field"><label for="sim-P">脉冲电流峰值 P / A</label><input id="sim-P" data-simulation-parameter="P" type="number" step="any" min="0.000000001" value="22" required disabled></div>
+        <div class="simulation-field"><label for="sim-TP">脉冲上升/下降时间 TP / s</label><input id="sim-TP" data-simulation-parameter="TP" type="number" step="any" min="0.000000001" value="50e-6" required disabled></div>
+      </div>
+      </div>
+    <div id="simulation-custom-parameters" hidden></div>
+    <div id="simulation-ann-function" hidden><textarea id="simulation-ann-code" hidden></textarea><span id="simulation-ann-code-state"></span><button id="simulation-ann-reset" type="button" hidden>恢复模型原有代码</button></div>
+    <p id="simulation-description" class="simulation-description">请先选择仿真方式。</p>
+  </form>
+  <p id="simulation-feedback" class="feedback" role="status" aria-live="polite"></p>
+</section>
+{% include "project/sections/simulation_workspace.html" %}
+<details class="panel simulation-reference" id="simulation-reference">
+  <summary><span class="simulation-reference-title">已有仿真结果对比</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content"><p class="simulation-description">暂无对比结果。</p></div>
+</details>

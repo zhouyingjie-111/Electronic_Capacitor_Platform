@@ -1,0 +1,264 @@
+{
+  "evaluation_scope": "chronological holdout within the SAME acquisitions; NOT independent hardware validation",
+  "outputs": [
+    "C1_uF",
+    "C2_uF",
+    "C3_uF",
+    "C4_uF",
+    "ESR1_Ohm",
+    "ESR2_Ohm",
+    "ESR3_Ohm",
+    "ESR4_Ohm"
+  ],
+  "constant_outputs": [
+    "C1_uF",
+    "C3_uF",
+    "ESR1_Ohm",
+    "ESR3_Ohm"
+  ],
+  "limitation": "Only 3 known configurations. C and ESR co-vary; independent ESR identification and unseen states are unvalidated.",
+  "train": {
+    "C1_uF": {
+      "n": 99,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C2_uF": {
+      "n": 99,
+      "mre_percent": 0.7598476445904149,
+      "rmse": 5.366734326419021,
+      "r2": 0.9871787237862413,
+      "maximum_relative_error_percent": 2.7330715369112175
+    },
+    "C3_uF": {
+      "n": 99,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C4_uF": {
+      "n": 99,
+      "mre_percent": 0.21219907767307827,
+      "rmse": 1.5120260982806935,
+      "r2": 0.9985461098375944,
+      "maximum_relative_error_percent": 0.9722448156352161
+    },
+    "ESR1_Ohm": {
+      "n": 99,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR2_Ohm": {
+      "n": 99,
+      "mre_percent": 1.408707551310922,
+      "rmse": 0.004715458887468625,
+      "r2": 0.9854480061441663,
+      "maximum_relative_error_percent": 4.142051034367232
+    },
+    "ESR3_Ohm": {
+      "n": 99,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR4_Ohm": {
+      "n": 99,
+      "mre_percent": 0.3125005618901265,
+      "rmse": 0.0012354074679083533,
+      "r2": 0.9985730886851727,
+      "maximum_relative_error_percent": 1.8330974293199103
+    }
+  },
+  "validation": {
+    "C1_uF": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C2_uF": {
+      "n": 3,
+      "mre_percent": 3.440914300593043,
+      "rmse": 27.09937732093708,
+      "r2": 0.6487731820255782,
+      "maximum_relative_error_percent": 7.499945522424743
+    },
+    "C3_uF": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C4_uF": {
+      "n": 3,
+      "mre_percent": 1.0265942773978172,
+      "rmse": 6.823672079406307,
+      "r2": 0.9777307627895938,
+      "maximum_relative_error_percent": 2.1703603285025115
+    },
+    "ESR1_Ohm": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR2_Ohm": {
+      "n": 3,
+      "mre_percent": 5.866752861607677,
+      "rmse": 0.019524320441657392,
+      "r2": 0.7319693787699191,
+      "maximum_relative_error_percent": 12.764813042887344
+    },
+    "ESR3_Ohm": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR4_Ohm": {
+      "n": 3,
+      "mre_percent": 1.277260303899669,
+      "rmse": 0.004765914593412719,
+      "r2": 0.9840292588793852,
+      "maximum_relative_error_percent": 2.394486272211811
+    }
+  },
+  "test": {
+    "C1_uF": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C2_uF": {
+      "n": 3,
+      "mre_percent": 3.0910909323445495,
+      "rmse": 17.693649994167117,
+      "r2": 0.8502716945985328,
+      "maximum_relative_error_percent": 5.171158787207795
+    },
+    "C3_uF": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "C4_uF": {
+      "n": 3,
+      "mre_percent": 0.35505054843386963,
+      "rmse": 2.8841117691675007,
+      "r2": 0.996021739490198,
+      "maximum_relative_error_percent": 0.8158764377645646
+    },
+    "ESR1_Ohm": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR2_Ohm": {
+      "n": 3,
+      "mre_percent": 5.15475156338537,
+      "rmse": 0.0170804752688458,
+      "r2": 0.794868450307493,
+      "maximum_relative_error_percent": 8.06960295296318
+    },
+    "ESR3_Ohm": {
+      "n": 3,
+      "mre_percent": 0.0,
+      "rmse": 0.0,
+      "r2": null,
+      "maximum_relative_error_percent": 0.0
+    },
+    "ESR4_Ohm": {
+      "n": 3,
+      "mre_percent": 0.8355474493236851,
+      "rmse": 0.002512667438284543,
+      "r2": 0.9955608217625893,
+      "maximum_relative_error_percent": 1.5977087477330831
+    }
+  },
+  "test_mean_baseline": {
+    "C1_uF": {
+      "n": 3,
+      "mre_percent": 9.665107644532321e-05,
+      "rmse": 0.00048828125,
+      "r2": null,
+      "maximum_relative_error_percent": 9.665107644532321e-05
+    },
+    "C2_uF": {
+      "n": 3,
+      "mre_percent": 8.296534363807039,
+      "rmse": 46.10253496215882,
+      "r2": -0.016526388002640502,
+      "maximum_relative_error_percent": 9.76225986158135
+    },
+    "C3_uF": {
+      "n": 3,
+      "mre_percent": 9.665107644532321e-05,
+      "rmse": 0.00048828125,
+      "r2": null,
+      "maximum_relative_error_percent": 9.665107644532321e-05
+    },
+    "C4_uF": {
+      "n": 3,
+      "mre_percent": 6.945437970607651,
+      "rmse": 47.21378255647389,
+      "r2": -0.06612133965405365,
+      "maximum_relative_error_percent": 12.690923630547783
+    },
+    "ESR1_Ohm": {
+      "n": 3,
+      "mre_percent": 6.519258168025124e-05,
+      "rmse": 2.086162567138672e-07,
+      "r2": null,
+      "maximum_relative_error_percent": 6.519258168025124e-05
+    },
+    "ESR2_Ohm": {
+      "n": 3,
+      "mre_percent": 13.299675748655568,
+      "rmse": 0.038022778715963296,
+      "r2": -0.016530147907125814,
+      "maximum_relative_error_percent": 20.201945508066586
+    },
+    "ESR3_Ohm": {
+      "n": 3,
+      "mre_percent": 6.519258168025124e-05,
+      "rmse": 2.086162567138672e-07,
+      "r2": null,
+      "maximum_relative_error_percent": 6.519258168025124e-05
+    },
+    "ESR4_Ohm": {
+      "n": 3,
+      "mre_percent": 12.289575679284454,
+      "rmse": 0.038939050276008,
+      "r2": -0.06611307325094451,
+      "maximum_relative_error_percent": 26.262545924293285
+    }
+  },
+  "parameter_count": 1528,
+  "cnn_mac": 28928,
+  "image_shape": [
+    6,
+    32,
+    3
+  ],
+  "window_ms": 10.24,
+  "sample_dt_s": 1e-05,
+  "tensorflow_version": "2.19.0",
+  "selected_epoch": 266,
+  "epochs_run": 300
+}

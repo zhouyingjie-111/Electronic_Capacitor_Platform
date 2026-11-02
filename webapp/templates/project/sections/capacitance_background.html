@@ -1,0 +1,27 @@
+<section class="panel background-intro" id="capacitance-background">
+  <h3>为什么需要无侵入识别？</h3>
+  <p class="background-lead">储能电容承担脉冲能量缓冲。通过运行信号识别容值与 ESR，可为电容状态监测提供依据。</p>
+  <div class="background-grid">
+    <article class="background-card">
+      <span class="background-kicker">01 / 监测需求</span>
+      <h4>周期充放电带来持续应力</h4>
+      <p>储能电容长期承受周期性深度充放电，需要关注容值与 ESR 的变化，为器件状态监测提供依据。</p>
+      {{ figure('background_capacitor_voltage.png', '脉冲负载下的电容充放电与电压变化') }}
+    </article>
+    <article class="background-card">
+      <span class="background-kicker">02 / 辨识挑战</span>
+      <h4>耦合网络中的单体参数难以分离</h4>
+      <p>电容阵列电气耦合复杂，脉冲扰动增加了辨识难度。利用运行中的电压、电流信号，估计各固定位置的 C 与 ESR。</p>
+      {{ figure('background_capacitor_topology.png', '双通道互济型电子电容与储能支路') }}
+    </article>
+  </div>
+</section>
+<section class="panel diagram-explainer" id="capacitance-monitoring-approach">
+  <div class="diagram-copy">
+    <span class="output-badge">监测思路</span>
+    <h3>从模型求解到数据驱动辨识</h3>
+    <p><strong>传统监测</strong>通过物理建模、信号处理与参数迭代完成辨识；噪声、寄生参数和多频段响应会增加求解难度。</p>
+    <p><strong>数据驱动辨识</strong>将小波预处理与 CNN 相结合，从运行信号中学习电路状态与电容参数的映射，为单体状态监测提供依据。</p>
+  </div>
+  <div class="diagram-visual">{{ figure('capacitance_monitoring_comparison.png', '传统监测与 AI 数据驱动监测思路对比') }}</div>
+</section>

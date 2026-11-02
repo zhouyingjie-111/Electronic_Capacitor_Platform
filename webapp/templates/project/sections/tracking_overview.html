@@ -1,0 +1,38 @@
+  <section class="panel" id="tracking-overview"><h3>从仿真数据到瞬态控制</h3>
+    <div class="pipeline">
+      <div class="step"><span>01 / 数据获取</span><b>仿真与占空比寻优</b></div>
+      <div class="step"><span>02 / 数据处理</span><b>上升与下降样本</b></div>
+      <div class="step"><span>03 / 模型训练</span><b>轻量化 ANN</b></div>
+      <div class="step"><span>04 / 在线控制</span><b>ANN 与 PI 协同</b></div>
+    </div>
+  </section>
+  <section class="panel" id="tracking-inputs"><div class="panel-header"><h3>输入状态与控制量</h3><span class="output-badge">瞬态占空比 <b>DTgiven</b></span></div>
+    <dl class="feature-grid tracking-inputs">
+      <div><dt>direction_state</dt><dd>0：上升；1：下降</dd></div>
+      <div><dt>VC1</dt><dd>输入电容电压 / V</dd></div>
+      <div><dt>VG1</dt><dd>输出电容电压 / V</dd></div>
+      <div><dt>P_peak</dt><dd>脉冲峰值：18–24 A</dd></div>
+      <div><dt>T_rise_fall</dt><dd>上升/下降时间：40–60 μs</dd></div>
+    </dl>
+  </section>
+  <details class="panel simulation-reference network-explainer" id="tracking-network">
+    <summary><span class="simulation-reference-title">轻量化 ANN 网络结构</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+    <div class="simulation-reference-content"><span class="output-badge">DTgiven 预测通路 <b>5 → 8 → 4 → 1</b></span>
+    <div class="network-visual">{{ figure('tracking_network_40_60us.png', 'ANN 瞬态占空比预测通路') }}</div>
+    </div>
+  </details>
+  {% include "project/sections/tracking_training.html" %}
+  <details class="panel simulation-reference" id="model-results"><summary><span class="simulation-reference-title">已保存的模型结果</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary><div class="simulation-reference-content"><div class="model-controls"><label for="model-version">模型版本</label><select id="model-version">{% for version in versions %}<option value="{{ version.key }}" {% if version.key == 'ultralight' %}selected{% endif %}>{{ version.label }}</option>{% endfor %}</select></div>
+    {% for version in versions %}<div class="model-panel" data-model-panel="{{ version.key }}" {% if version.key != 'ultralight' %}hidden{% endif %}>
+      <div class="dataset-split" aria-label="样本划分"><span>训练集 <b>{{ version.data_split.train_samples }}</b></span><span>验证集 <b>{{ version.data_split.validation_samples }}</b></span><span>测试集 <b>{{ version.data_split.test_samples }}</b></span></div>
+      <div class="table-wrap"><table><thead><tr><th>控制量</th><th>MAE</th><th>MSE</th><th>R²</th><th>最大绝对误差</th></tr></thead><tbody>{% for name, metric in version.test_metrics.items() %}<tr><td>{{ name }}</td><td>{{ '%.6f'|format(metric.mae) }}</td><td>{{ '%.6f'|format(metric.mse) }}</td><td>{{ '%.5f'|format(metric.r2) }}</td><td>{{ '%.6f'|format(metric.max_absolute_error) }}</td></tr>{% endfor %}</tbody></table></div>
+      <div class="figure-grid" style="margin-top:20px">
+        <figure><a href="{{ url_for('project.static', filename='tracking/' + version.key + '_dtgiven_scatter.svg') }}" data-image-viewer><img src="{{ url_for('project.static', filename='tracking/' + version.key + '_dtgiven_scatter.svg') }}" alt="{{ version.label }} DTgiven 预测散点图" loading="lazy"></a><figcaption>DTgiven · 预测值与真实值散点图</figcaption></figure>
+        <figure><a href="{{ url_for('project.static', filename='tracking/' + version.key + '_dtgiven_line.svg') }}" data-image-viewer><img src="{{ url_for('project.static', filename='tracking/' + version.key + '_dtgiven_line.svg') }}" alt="{{ version.label }} DTgiven 逐样本预测折线图" loading="lazy"></a><figcaption>DTgiven · 逐样本预测与真实值对比</figcaption></figure>
+      </div>
+    </div>{% else %}<p>当前模型结果暂不可用。</p>{% endfor %}
+  </div></details>
+  <details class="panel simulation-reference data-preview" id="data-preview">
+    <summary><span class="simulation-reference-title">汇总数据预览</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+    <div class="simulation-reference-content"><p class="preview-label">展示前8行</p><div class="table-wrap" tabindex="0" role="region" aria-label="汇总数据预览"><table><thead><tr>{% for column in summary.columns %}<th>{{ column }}</th>{% endfor %}</tr></thead><tbody>{% for row in summary.rows %}<tr>{% for value in row %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div></div>
+  </details>

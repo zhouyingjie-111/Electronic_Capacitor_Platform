@@ -1,0 +1,10 @@
+{% extends "project/base.html" %}
+{% block title %}电力电子专家 · 智能对话{% endblock %}
+{% block body_class %}detail-page ai-page{% endblock %}
+{% block body %}
+<main class="page-shell">
+  {% include "project/nav.html" %}
+  <section class="page-hero"><h2>电力电子专家</h2><p>围绕电路、控制、器件与实验展开讨论，结合文件分析、工程计算和 Simulink 仿真辅助研究。</p></section>
+  {% include "project/chat_workbench.html" %}
+</main>
+{% endblock %}

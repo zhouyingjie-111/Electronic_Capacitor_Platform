@@ -1,0 +1,11 @@
+{
+  "HOST": "127.0.0.1",
+  "PORT": 5001,
+  "DELTA_PROJECT_ROOT": "project_data",
+  "ANN_PYTHON": "",
+  "CAP_PYTHON": "",
+  "MATLAB_ROOT": "",
+  "TI_CGT_ROOT": "",
+  "CAP_CLANG": "",
+  "CAP_CL2000": ""
+}

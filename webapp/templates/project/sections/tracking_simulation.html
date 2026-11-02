@@ -1,0 +1,36 @@
+<section class="panel" id="simulation-validation">
+  <h3>仿真验证</h3>
+  <p>选择仿真方式并设置仿真时长，启动后查看模型画面与实时进度。</p>
+  <form id="simulation-form" class="simulation-form">
+    <div class="simulation-form-controls">
+      <div class="simulation-field simulation-type-field"><label for="simulation-type">仿真方式</label><select id="simulation-type" required><option value="" selected disabled>请选择仿真方式</option><option value="pi">PI 控制</option><option value="ann">ANN 控制</option><option value="custom">自定义瞬态占空比参数仿真</option></select></div>
+      <div class="simulation-field simulation-duration-field" id="simulation-duration-field" hidden><label for="simulation-duration">仿真时长 / s</label><input id="simulation-duration" type="number" min="0.0000001" step="any" value="0.8" required disabled aria-describedby="simulation-description"></div>
+      <button class="btn-primary" id="simulation-start" type="submit" disabled>开始仿真</button>
+    </div>
+    <div id="simulation-parameters" hidden>
+      <div class="simulation-parameter-grid">
+        <div class="simulation-field"><label for="sim-P">脉冲电流峰值 P / A</label><input id="sim-P" data-simulation-parameter="P" type="number" step="any" min="0.000000001" value="22" required disabled></div>
+        <div class="simulation-field"><label for="sim-TP">脉冲上升/下降时间 TP / s</label><input id="sim-TP" data-simulation-parameter="TP" type="number" step="any" min="0.000000001" value="50e-6" required disabled></div>
+        <div class="simulation-field"><label for="sim-P_V">电压外环比例 P_V</label><input id="sim-P_V" data-simulation-parameter="P_V" type="number" step="any" min="0" value="0.15" required disabled></div>
+        <div class="simulation-field"><label for="sim-I_V">电压外环积分 I_V</label><input id="sim-I_V" data-simulation-parameter="I_V" type="number" step="any" min="0" value="0.5" required disabled></div>
+        <div class="simulation-field"><label for="sim-P_I">电流内环比例 P_I</label><input id="sim-P_I" data-simulation-parameter="P_I" type="number" step="any" min="0" value="0.2" required disabled></div>
+        <div class="simulation-field"><label for="sim-I_I">电流内环积分 I_I</label><input id="sim-I_I" data-simulation-parameter="I_I" type="number" step="any" min="0" value="2" required disabled></div>
+      </div>
+      <div id="simulation-custom-parameters" hidden><div class="simulation-parameter-grid">
+        <div class="simulation-field"><label for="sim-D_rise">上升沿参数 D_rise</label><input id="sim-D_rise" data-simulation-parameter="D_rise" type="number" step="any" min="0" required disabled></div>
+        <div class="simulation-field"><label for="sim-D_fall">下降沿参数 D_fall</label><input id="sim-D_fall" data-simulation-parameter="D_fall" type="number" step="any" min="0" required disabled></div>
+      </div><p class="simulation-description">模型按 D_rise × 10⁻⁵、D_fall × 10⁻⁵ 使用这两个参数。</p></div>
+    </div>
+    <div id="simulation-ann-function" hidden>
+      <details class="simulation-code-editor"><summary>ANN · MATLAB Function 代码</summary>
+        <p>保留 5 个输入、1 个输出的接口；编辑后的代码用于本次仿真。</p>
+        <label for="simulation-ann-code">函数代码</label><textarea id="simulation-ann-code" spellcheck="false" aria-describedby="simulation-ann-code-state" disabled></textarea>
+        <div class="simulation-code-actions"><span id="simulation-ann-code-state" role="status"></span><button type="button" class="btn" id="simulation-ann-reset">恢复模型原有代码</button></div>
+      </details>
+    </div>
+    <p id="simulation-description" class="simulation-description">请先选择仿真方式。</p>
+  </form>
+  <p id="simulation-feedback" class="feedback" role="status" aria-live="polite"></p>
+</section>
+{% include "project/sections/simulation_workspace.html" %}
+<details class="panel simulation-reference" id="simulation-reference"><summary><span class="simulation-reference-title">已有仿真效果对比</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary><div class="simulation-reference-content"><p>工况：脉冲电流峰值 22 A，上升、下降时间 50 μs。下列图片为已有仿真记录。</p><div class="figure-grid signal-strip-grid">{{ figure('simulation_pi.png', 'PI 控制输入电流') }}{{ figure('simulation_ann.png', 'ANN 控制输入电流') }}</div></div></details>

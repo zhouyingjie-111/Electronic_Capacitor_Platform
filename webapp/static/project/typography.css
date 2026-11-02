@@ -1,0 +1,49 @@
+/* 中文正文使用宋体；西文与数字优先使用 Times New Roman。 */
+:root {
+  --font-text: "Times New Roman", "SimSun", "宋体", serif;
+  --font-heading: "Times New Roman", "Microsoft YaHei", "微软雅黑", sans-serif;
+}
+
+body {
+  font-family: var(--font-text);
+}
+
+button, input, select, textarea, option, optgroup {
+  font-family: inherit;
+}
+
+/* 覆盖原来的等宽参数、文件路径与代码字体，字号和布局保持原设置。 */
+.feature-grid dt, .code-content, .file-path, code, pre, kbd, samp {
+  font-family: var(--font-text);
+}
+
+h1, h2, h3, h4, h5, h6,
+.main-title, .title, .function-title, .step b, .resource-item > b {
+  font-family: var(--font-heading);
+}
+
+/* 按信息层级统一字号，辅助文字也保持可读。 */
+body { font-size:16px; line-height:1.65; }
+.function-description, .page-hero p, .detail-page .page-hero p,
+.panel p, .panel li, .detail-page .panel p, .detail-page .panel li,
+.section-heading p { font-size:16px; line-height:1.85; }
+.panel h3, .detail-page .panel h3 { font-size:21px; }
+.panel h4, .step b, .resource-item>b { font-size:18px; }
+.btn, .btn-primary, .chip-link, .section-nav a, .detail-page .section-nav a { font-size:15px; }
+.page-nav a, .detail-page .page-nav a, .page-nav .module-nav .module-link,
+.detail-page .site-header p, .status-bar, .source, .note, .detail-page .note,
+.resource-item span, .resource-item code, .step span, .step p,
+.feature-grid dd, .model-controls, .detail-page .panel-header .model-controls,
+.dataset-split span, .preview-label, .eyebrow, .detail-page .eyebrow,
+.output-badge, .background-kicker { font-size:14px; }
+.detail-page figcaption, figcaption, .detail-page select, select,
+.feature-grid dt, .dataset-split b, table, .detail-page th, .detail-page td { font-size:15px; }
+.detail-page .background-card>p { font-size:16px; min-height:0; }
+.diagram-copy p>strong { font-family:var(--font-heading); font-size:17px; }
+.detail-page .diagram-copy .diagram-scope { font-size:14px; }
+@media(max-width:700px) {
+  .function-title { font-size:21px; }
+  .detail-page .page-hero h2 { font-size:24px; }
+  .page-nav .module-nav .module-link, .detail-page .section-nav a { font-size:14px; }
+  .panel h3, .detail-page .panel h3 { font-size:20px; }
+}

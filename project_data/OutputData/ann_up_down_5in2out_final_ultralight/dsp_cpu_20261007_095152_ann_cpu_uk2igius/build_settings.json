@@ -1,0 +1,20 @@
+{
+  "source_model": "project_data\\OutputData\\ann_up_down_5in2out_final_ultralight\\ann_up_down_5in2out_full_static.onnx",
+  "python": "D:\\environment\\PythonEnvironment\\Envs\\python3.10\\python.exe",
+  "compiler": "C:\\ti\\ccs2051\\ccs\\tools\\compiler\\ti-cgt-c2000_25.11.0.LTS\\bin\\cl2000.exe",
+  "target": "c, ti-npu type=soft",
+  "command": [
+    "D:\\environment\\PythonEnvironment\\Envs\\python3.10\\python.exe",
+    "-m",
+    "tvm.driver.tvmc",
+    "compile",
+    "--target=c, ti-npu type=soft",
+    "--target-c-mcpu=c28",
+    "model.onnx",
+    "-o",
+    "artifacts_cpu/mod.a",
+    "--cross-compiler=cl2000",
+    "--cross-compiler-options=--float_support=fpu32 --abi=eabi -O3 --opt_for_speed=5 --c99 -v28 -ml -mt --gen_func_subsections -IC:/ti/ccs2051/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include -I."
+  ],
+  "work_directory": "C:\\ann_compile_ultralight\\ann_cpu_uk2igius"
+}

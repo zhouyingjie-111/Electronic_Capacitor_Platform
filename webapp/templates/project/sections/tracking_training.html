@@ -1,0 +1,45 @@
+<details class="panel simulation-reference ann-workbench" id="ann-training">
+  <summary><span class="simulation-reference-title">模型训练</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+  <form id="ann-training-form">
+    <div class="ann-controls">
+      <div class="ann-field"><label for="ann-dataset-source">训练数据</label><select id="ann-dataset-source"><option value="default">默认数据集</option><option value="upload">上传 CSV 数据集</option></select></div>
+      <div class="ann-field" id="ann-dataset-file-field" hidden><label for="ann-dataset-file">选择数据文件</label><input type="file" id="ann-dataset-file" accept=".csv"></div>
+      <button class="btn-primary" type="submit" id="ann-start">开始训练</button>
+    </div>
+    <details class="ann-file-notes"><summary>数据文件要求</summary><p>上传 CSV（UTF-8 或 GBK，最大 20 MB），至少包含 5 组不同的有效工况。必要列：</p><p class="ann-columns">P_peak、T_rise_fall、VC1_UP、VG1_UP、VC1_DOWN、VG1_DOWN、D_T_UP_given、D_T_DOWN_given、PWM_S_UP_first、PWM_S_DOWN_first</p><p>峰值单位为 A，电压单位为 V，时间单位为 s（50 μs 写作 5e-5）；占空比为 0～1。必要列须为有限数值，其他列可保留。</p></details>
+  </form>
+  <p class="feedback" id="ann-feedback" role="status" aria-live="polite"></p>
+  <div class="ann-log-header"><h4>训练日志</h4><span id="ann-stage" role="status">等待开始</span></div>
+  <pre class="ann-log" id="ann-log" tabindex="0" aria-label="训练运行日志">选择数据后点击“开始训练”。</pre>
+  <div id="ann-results" hidden>
+    <div class="panel-header"><h4>本次训练结果</h4><a class="btn" id="ann-download" hidden>下载模型</a></div>
+    <div class="table-wrap"><table><thead><tr><th>控制量</th><th>MAE</th><th>MSE</th><th>R²</th><th>最大绝对误差</th></tr></thead><tbody id="ann-metrics"></tbody></table></div>
+    <div class="figure-grid ann-result-figures" id="ann-result-figures"></div>
+  </div>
+  </div>
+</details>
+<details class="panel simulation-reference ann-workbench" id="ann-compilation">
+  <summary><span class="simulation-reference-title">模型编译</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary>
+  <div class="simulation-reference-content">
+  <div class="ann-compile-controls">
+    <div class="ann-controls">
+      <div class="ann-field"><label for="ann-compile-target">编译方式</label><select id="ann-compile-target"><option value="standard">CPU模型编译</option><option value="npu">NPU 加速编译</option></select></div>
+      <div class="ann-field"><label for="ann-model-source">编译输入</label><select id="ann-model-source"><option value="latest">使用本次训练输出</option><option value="upload">上传 ONNX 模型</option></select></div>
+      <div class="ann-field" id="ann-model-file-field" hidden><label for="ann-model-file">选择模型文件</label><input type="file" id="ann-model-file" accept=".onnx"></div>
+      <button class="btn" type="button" id="ann-compile" disabled>编译模型</button>
+    </div>
+    <details class="ann-file-notes"><summary>模型文件要求</summary><p>默认使用训练生成的完整静态 ONNX，无需填写路径。也可上传内嵌权重的单个 .onnx 文件（最大 100 MB）；不接受核心网络、动态批次或外部权重文件。</p><p>模型须为 float32，输入名 raw_input、尺寸 [1,5]，输入顺序为 P_peak、T_rise_fall、VC1、VG1、direction_state；输出为 DTgiven。</p></details>
+    <details class="ann-file-notes" id="ann-npu-notes"><summary>NPU 编译要求</summary><p>面向 F28P55x，执行 TI 8 位量化、通道补零及硬件映射核验，原模型保留。</p><p>默认使用最近训练模型，暂无训练记录时使用已保存模型；上传模型需符合模型文件要求。默认校准数据优先采用该次训练数据，也可使用上方上传的 CSV。</p></details>
+  </div>
+  <p class="feedback" id="ann-compile-feedback" role="status" aria-live="polite"></p>
+  <div class="ann-log-header"><h4>编译日志</h4><span id="ann-compile-stage" role="status">等待开始</span></div>
+  <pre class="ann-log" id="ann-compile-log" tabindex="0" aria-label="编译运行日志"></pre>
+  <section id="ann-npu-results" hidden>
+    <div class="panel-header"><h4>NPU 编译核验</h4><span class="output-badge" id="ann-npu-mapping"></span></div>
+    <div class="table-wrap"><table><thead><tr><th>DTgiven 对比</th><th>MAE</th><th>RMSE</th><th>最大绝对误差</th></tr></thead><tbody id="ann-npu-metrics"></tbody></table></div>
+    <p class="ann-help" id="ann-npu-status"></p>
+  </section>
+  <div class="ann-compile-actions"><a class="btn ann-compile-download" id="ann-compile-download" hidden>下载编译结果</a></div>
+  </div>
+</details>

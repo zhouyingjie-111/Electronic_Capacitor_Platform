@@ -1,0 +1,20 @@
+{
+  "windows_tested": 105,
+  "max_feature_error": 1.4603137969970703e-06,
+  "max_prediction_abs_error": [
+    0.0,
+    6.103515625e-05,
+    0.0,
+    6.103515625e-05,
+    0.0,
+    2.9802322387695312e-08,
+    0.0,
+    2.9802322387695312e-08
+  ],
+  "api_edge_cases": "passed",
+  "host_math": "test-only numpy float32 log1p callback; target RTS math still needs board parity",
+  "target_compiler": "C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/bin/cl2000.exe",
+  "target_compile": "passed",
+  "target_archive": "project_data\\OutputData\\scope_cap_v1\\dsp\\cap_monitor_model.lib",
+  "board_status": "NOT run on DSP; no linker-memory/timing/interrupt validation"
+}

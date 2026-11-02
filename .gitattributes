@@ -1,0 +1,20 @@
+# Cross-platform text checkout; Windows launch scripts retain CRLF.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.slx binary
+*.npz binary
+*.npy binary
+*.onnx binary
+*.h5 binary
+*.keras binary
+*.a binary
+*.lib binary
+*.whl binary

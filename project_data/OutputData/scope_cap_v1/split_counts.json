@@ -1,0 +1,62 @@
+{
+  "0000": {
+    "train": {
+      "kept": 39,
+      "invalid_discarded": 0,
+      "start_index": 32,
+      "stop_index": 5967
+    },
+    "validation": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 6031,
+      "stop_index": 7967
+    },
+    "test": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 8031,
+      "stop_index": 9967
+    }
+  },
+  "0001": {
+    "train": {
+      "kept": 21,
+      "invalid_discarded": 18,
+      "start_index": 32,
+      "stop_index": 5968
+    },
+    "validation": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 6032,
+      "stop_index": 7968
+    },
+    "test": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 8032,
+      "stop_index": 9968
+    }
+  },
+  "0100": {
+    "train": {
+      "kept": 39,
+      "invalid_discarded": 0,
+      "start_index": 32,
+      "stop_index": 5968
+    },
+    "validation": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 6032,
+      "stop_index": 7968
+    },
+    "test": {
+      "kept": 1,
+      "invalid_discarded": 0,
+      "start_index": 8032,
+      "stop_index": 9968
+    }
+  }
+}

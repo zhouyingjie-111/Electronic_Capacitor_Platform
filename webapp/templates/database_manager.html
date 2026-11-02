@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据文件管理系统</title>
+    <style>
+        :root { 
+            color-scheme: light; 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Microsoft YaHei', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #d0d0d0;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #3a86ff, #7a5cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            color: #666666;
+            font-size: 1.1em;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            width: 100%;
+        }
+
+        .tabs {
+            display: flex;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 30px;
+            gap: 8px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: transparent;
+            font-size: 1em;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #666666;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        .tab.active {
+            background: #ffffff;
+            color: #1a1a1a;
+            font-weight: 600;
+            border: 1px solid #d0d0d0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .control-panel {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #d0d0d0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.9em;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 1em;
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3a86ff;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-primary:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-success:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-danger:hover {
+            background: #f5f5f5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-warning {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-warning:hover {
+            background: #f5f5f5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-card {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .file-info h3 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .column-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .column-tag {
+            background: #e8e8e8;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #666666;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            max-height: 600px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, #3a86ff, #7a5cff);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .btn-sm:hover {
+            transform: translateY(-1px);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #d0d0d0;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #666666;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #f5f5f5;
+            color: #1a1a1a;
+            border-color: #d0d0d0;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            padding: 8px 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        .modal-header h2 {
+            background: linear-gradient(135deg, #3a86ff, #7a5cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal .form-group input,
+        .modal .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .modal .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(58, 134, 255, 0.15);
+        }
+
+        .stat-file-list {
+            max-height: 320px;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
+            scrollbar-gutter: stable;
+            padding-right: 8px;
+        }
+
+        .stat-file-list:focus-visible {
+            outline: 2px solid #3a86ff;
+            outline-offset: 3px;
+        }
+
+        .stat-list-label {
+            color: #666666;
+            font-size: 0.9em;
+            margin-top: 18px;
+        }
+
+        .stat-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666666;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #3a86ff;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: slideDown 0.3s;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3a86ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-list {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f8f9fa;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item input[type="checkbox"] {
+            margin-right: 12px;
+        }
+
+        .file-info-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .file-meta {
+            font-size: 0.85em;
+            color: #666666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .import-export-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .import-export-card {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .import-export-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .file-upload {
+            border: 2px dashed #d0d0d0;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 15px 0;
+        }
+
+        .file-upload:hover {
+            border-color: #3a86ff;
+            background: rgba(58, 134, 255, 0.05);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #d0d0d0;
+            color: #1a1a1a;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            border-color: #3a86ff;
+            color: #3a86ff;
+        }
+
+        @media (max-width: 768px) {
+            .import-export-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .control-panel {
+                flex-direction: column;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .logout-btn {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                margin: 10px auto;
+                display: block;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='typography.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>数据文件管理系统</h1>
+        <p>InputData 原始样本 · OutputData 处理结果与模型数据</p>
+        <button class="logout-btn" onclick="goToMain()" style="position: absolute; top: 20px; left: 30px;">
+            ← 返回主平台
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('data-manager', this)">数据管理</button>
+            <button class="tab" onclick="switchTab('import-export', this)">导入/导出</button>
+            <button class="tab" onclick="switchTab('statistics', this)">文件统计</button>
+            <button class="tab" onclick="switchTab('cleanup', this)">文件清理</button>
+        </div>
+
+        <!-- 数据管理标签页 -->
+        <div id="data-manager" class="tab-content active">
+            <div id="alert-container"></div>
+            
+            <div class="control-panel">
+                <div class="form-group">
+                    <label for="file-selector">选择文件:</label>
+                    <select id="file-selector" onchange="onFileChange()">
+                        <option value="">-- 选择CSV文件 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="search-input">搜索:</label>
+                    <input type="text" id="search-input" placeholder="输入搜索关键词..." onkeyup="onSearch()">
+                </div>
+
+                <button class="btn btn-success" onclick="showAddRecordModal()" style="margin-top: 23px;">
+                    ➕ 添加记录
+                </button>
+
+                <button class="btn btn-primary" onclick="refreshData()" style="margin-top: 23px;">
+                    🔄 刷新
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>加载中...</p>
+            </div>
+
+            <div id="data-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📁</div>
+                    <p>请选择一个CSV文件开始管理</p>
+                </div>
+            </div>
+
+            <div class="pagination" id="pagination" style="display: none;">
+                <!-- 分页控件 -->
+            </div>
+        </div>
+
+        <!-- 导入/导出标签页 -->
+        <div id="import-export" class="tab-content">
+            <div class="import-export-grid">
+                <div class="import-export-card">
+                    <h3>📥 导入数据</h3>
+                    <div class="form-group">
+                        <label>选择目标文件:</label>
+                        <select id="import-file-select">
+                            <option value="">-- 选择文件 --</option>
+                        </select>
+                    </div>
+
+                    <div class="file-upload" onclick="document.getElementById('csv-file-input').click()">
+                        <input type="file" id="csv-file-input" accept=".csv" onchange="handleFileSelect(event)">
+                        <p>📁 点击选择CSV文件</p>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 10px;">或拖拽文件到此处</p>
+                        <p id="selected-file" style="color: #3a86ff; font-weight: bold; margin-top: 10px;"></p>
+                    </div>
+
+                    <p style="color: #ff6b6b; font-size: 0.9em; margin-bottom: 15px;">
+                        ⚠️ 导入将覆盖原文件，请确保数据格式一致！原文件会自动备份。
+                    </p>
+
+                    <button class="btn btn-success" onclick="importCSV()" style="width: 100%;">
+                        📤 导入数据
+                    </button>
+                </div>
+
+                <div class="import-export-card">
+                    <h3>📤 导出数据</h3>
+                    <div class="form-group">
+                        <label>选择要导出的文件:</label>
+                        <select id="export-file-select">
+                            <option value="">-- 选择文件 --</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="exportCSV()" style="width: 100%; margin-top: 30px;">
+                        💾 导出为CSV
+                    </button>
+
+                    <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #e8e8e8;">
+                        <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">
+                            📋 导出的文件将直接下载到本地
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件统计标签页 -->
+        <div id="statistics" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>文件统计信息</h2>
+                <button class="btn btn-primary" onclick="loadStatistics()">🔄 刷新统计</button>
+            </div>
+            
+            <div id="stats-container" class="stats-grid">
+                <!-- 统计信息 -->
+            </div>
+        </div>
+
+        <!-- 文件清理标签页 -->
+        <div id="cleanup" class="tab-content">
+            <div class="data-card" style="margin-bottom: 30px;">
+                <div class="file-info">
+                    <h3>🗑️ 清理旧文件</h3>
+                    <p style="color: #666; margin-top: 10px;">仅扫描 InputData 和 OutputData 中超过指定时间未修改的文件，选中后可删除</p>
+                </div>
+                <div style="padding: 25px;">
+                    <div class="form-group">
+                        <label>选择时间范围:</label>
+                        <select id="cleanup-period">
+                            <option value="week">一周</option>
+                            <option value="month" selected>一月</option>
+                            <option value="half_year">半年</option>
+                            <option value="year">一年</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="scanOldFiles()">🔍 扫描旧文件</button>
+                        <button class="btn btn-danger" onclick="deleteSelectedFiles()">🗑️ 删除选中文件</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-card" style="margin-bottom: 30px;">
+                <div class="file-info">
+                    <h3>🔧 检查损坏文件</h3>
+                    <p style="color: #666; margin-top: 10px;">检查 InputData 和 OutputData 中的文件是否可读取或存在格式问题</p>
+                    <p style="color: #999; margin-top: 5px; font-size: 0.9em;">CSV 检查直接读取文件；模型文件不因缺少运行库而判定损坏</p>
+                </div>
+                <div style="padding: 25px;">
+                    <button class="btn btn-warning" onclick="checkCorruptedFiles()">🔍 检查数据文件</button>
+                    <p style="color: #999; margin-top: 10px; font-size: 0.9em;">扫描范围仅包含 InputData 和 OutputData 及其子目录</p>
+                </div>
+            </div>
+
+            <div id="cleanup-results"></div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑记录模态框 -->
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">添加记录</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="record-form">
+                <div id="form-fields"></div>
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">💾 保存</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()" style="flex: 1;">❌ 取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = '';
+        let currentPage = 1;
+        let perPage = 50;
+        let searchQuery = '';
+        let currentEditIndex = null;
+        let scannedFiles = [];
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFiles();
+            loadStatistics();
+        });
+
+        // 切换标签
+        function switchTab(tabId, button) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            button.classList.add('active');
+            if (tabId === 'statistics') loadStatistics();
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // 返回主平台
+        function goToMain() {
+            window.location.href = '/';
+        }
+
+        // 加载所有文件
+        async function loadFiles() {
+            try {
+                const response = await fetch('/api/db/files');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const selectors = ['file-selector', 'import-file-select', 'export-file-select'];
+                    selectors.forEach(selectorId => {
+                        const select = document.getElementById(selectorId);
+                        select.innerHTML = '<option value="">-- 选择文件 --</option>';
+                        data.files.forEach(file => {
+                            const option = document.createElement('option');
+                            option.value = file.display_name;
+                            option.textContent = file.display_name;
+                            select.appendChild(option);
+                        });
+                    });
+                }
+            } catch (error) {
+                showAlert('加载文件列表失败: ' + error.message, 'error');
+            }
+        }
+
+        // 文件选择变化
+        async function onFileChange() {
+            currentFile = document.getElementById('file-selector').value;
+            if (currentFile) {
+                currentPage = 1;
+                await loadFileInfo();
+                await loadFileData();
+            } else {
+                document.getElementById('data-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>请选择一个CSV文件开始管理</p>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+            }
+        }
+
+        // 加载文件信息
+        async function loadFileInfo() {
+            try {
+                const response = await fetch(`/api/db/file/info?file=${encodeURIComponent(currentFile)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    // 文件信息已获取
+                }
+            } catch (error) {
+                console.error('加载文件信息失败:', error);
+            }
+        }
+
+        // 加载文件数据
+        async function loadFileData() {
+            if (!currentFile) return;
+            
+            showLoading(true);
+            
+            try {
+                const url = `/api/db/file/data?file=${encodeURIComponent(currentFile)}&page=${currentPage}&per_page=${perPage}${searchQuery ? '&search=' + encodeURIComponent(searchQuery) : ''}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayFileData(data);
+                    displayPagination(data);
+                    document.getElementById('pagination').style.display = 'flex';
+                } else {
+                    showAlert('加载失败: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('加载数据失败: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // 显示文件数据
+        function displayFileData(data) {
+            const container = document.getElementById('data-container');
+            
+            if (data.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <p>没有数据</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const columns = Object.keys(data.data[0]).filter(col => col !== '_index');
+            
+            let html = '<div class="data-card">';
+            html += '<div class="file-info">';
+            html += `<h3>📊 ${currentFile}</h3>`;
+            html += '<div class="column-tags">';
+            columns.forEach(col => {
+                html += `<span class="column-tag">${col}</span>`;
+            });
+            html += '</div></div>';
+            
+            html += '<div class="data-table-container"><table class="data-table"><thead><tr>';
+            columns.forEach(col => {
+                html += `<th>${col}</th>`;
+            });
+            html += '<th>操作</th></tr></thead><tbody>';
+            
+            data.data.forEach(row => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    const value = row[col];
+                    html += `<td>${value !== null && value !== undefined ? value : ''}</td>`;
+                });
+                html += `
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="editRecord(${row._index})" title="编辑记录">
+                                ✏️ 编辑
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRecord(${row._index})" title="删除记录">
+                                🗑️ 删除
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div></div>';
+            container.innerHTML = html;
+        }
+
+        // 显示分页
+        function displayPagination(data) {
+            const container = document.getElementById('pagination');
+            
+            container.innerHTML = `
+                <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>首页</button>
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
+                <span class="page-info">第 ${currentPage} 页 / 共 ${data.total_pages} 页 (总计 ${data.total} 条)</span>
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === data.total_pages ? 'disabled' : ''}>下一页</button>
+                <button onclick="changePage(${data.total_pages})" ${currentPage === data.total_pages ? 'disabled' : ''}>末页</button>
+            `;
+        }
+
+        // 切换页面
+        function changePage(page) {
+            currentPage = page;
+            loadFileData();
+        }
+
+        // 搜索
+        let searchTimeout;
+        function onSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = document.getElementById('search-input').value.trim();
+                currentPage = 1;
+                loadFileData();
+            }, 500);
+        }
+
+        // 刷新数据
+        function refreshData() {
+            loadFileData();
+            showAlert('数据已刷新', 'success');
+        }
+
+        // 显示添加记录模态框
+        async function showAddRecordModal() {
+            if (!currentFile) {
+                showAlert('请先选择一个文件', 'error');
+                return;
+            }
+            
+            currentEditIndex = null;
+            document.getElementById('modal-title').textContent = '添加记录';
+            
+            try {
+                const response = await fetch(`/api/db/file/info?file=${encodeURIComponent(currentFile)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    generateForm(data.columns);
+                    showModal();
+                }
+            } catch (error) {
+                showAlert('加载文件结构失败: ' + error.message, 'error');
+            }
+        }
+
+        // 编辑记录
+        async function editRecord(index) {
+            currentEditIndex = index;
+            document.getElementById('modal-title').textContent = '✏️ 编辑记录';
+            
+            try {
+                const infoResponse = await fetch(`/api/db/file/info?file=${encodeURIComponent(currentFile)}`);
+                const infoData = await infoResponse.json();
+                
+                const dataResponse = await fetch(`/api/db/file/data?file=${encodeURIComponent(currentFile)}&page=1&per_page=10000`);
+                const fileData = await dataResponse.json();
+                
+                const record = fileData.data.find(r => r._index === index);
+                
+                if (infoData.success && record) {
+                    generateForm(infoData.columns, record);
+                    showModal();
+                    showAlert('正在编辑第 ' + (index + 1) + ' 行记录', 'info');
+                } else {
+                    showAlert('未找到要编辑的记录', 'error');
+                }
+            } catch (error) {
+                showAlert('加载记录失败: ' + error.message, 'error');
+            }
+        }
+
+        // 生成表单
+        function generateForm(columns, data = null) {
+            const formFields = document.getElementById('form-fields');
+            formFields.innerHTML = '';
+            
+            columns.forEach(col => {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                
+                const label = document.createElement('label');
+                label.textContent = col;
+                div.appendChild(label);
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = col;
+                input.id = 'field-' + col;
+                
+                if (data && data[col] !== null && data[col] !== undefined) {
+                    input.value = data[col];
+                }
+                
+                div.appendChild(input);
+                formFields.appendChild(div);
+            });
+        }
+
+        // 显示模态框
+        function showModal() {
+            document.getElementById('record-modal').classList.add('show');
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('record-modal').classList.remove('show');
+            document.getElementById('record-form').reset();
+        }
+
+        // 处理表单提交
+        document.getElementById('record-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            try {
+                let response;
+                if (currentEditIndex !== null) {
+                    response = await fetch(`/api/db/file/record/${currentEditIndex}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({file: currentFile, data: data})
+                    });
+                } else {
+                    response = await fetch(`/api/db/file/record`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({file: currentFile, data: data})
+                    });
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(currentEditIndex !== null ? '记录更新成功' : '记录添加成功', 'success');
+                    closeModal();
+                    loadFileData();
+                } else {
+                    showAlert('操作失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('操作失败: ' + error.message, 'error');
+            }
+        });
+
+        // 删除记录
+        async function deleteRecord(index) {
+            if (!confirm('确定要删除这条记录吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/db/file/record/${index}?file=${encodeURIComponent(currentFile)}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('记录删除成功', 'success');
+                    loadFileData();
+                } else {
+                    showAlert('删除失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('selected-file').textContent = `已选择: ${file.name}`;
+            }
+        }
+
+        // 导入CSV
+        async function importCSV() {
+            const file = document.getElementById('import-file-select').value;
+            const fileInput = document.getElementById('csv-file-input');
+            
+            if (!file) {
+                showAlert('请选择目标文件', 'error');
+                return;
+            }
+            
+            if (!fileInput.files[0]) {
+                showAlert('请选择CSV文件', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`/api/db/file/import`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`导入成功！共导入 ${result.rows_imported} 条记录`, 'success');
+                    fileInput.value = '';
+                    document.getElementById('selected-file').textContent = '';
+                    loadFiles();
+                } else {
+                    showAlert('导入失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('导入失败: ' + error.message, 'error');
+            }
+        }
+
+        // 导出CSV
+        async function exportCSV() {
+            const file = document.getElementById('export-file-select').value;
+            
+            if (!file) {
+                showAlert('请选择要导出的文件', 'error');
+                return;
+            }
+            
+            try {
+                window.location.href = `/api/db/file/export?file=${encodeURIComponent(file)}`;
+                showAlert('导出成功！', 'success');
+            } catch (error) {
+                showAlert('导出失败: ' + error.message, 'error');
+            }
+        }
+
+        // 加载统计信息
+        async function loadStatistics() {
+            const container = document.getElementById('stats-container');
+            container.textContent = '正在统计 InputData 和 OutputData…';
+            try {
+                const response = await fetch('/api/db/stats');
+                if (!response.ok) throw new Error('请求失败（' + response.status + '）');
+                const data = await response.json();
+                if (!data.success) throw new Error(data.error || '无法获取统计信息');
+                displayStatistics(data.stats);
+            } catch (error) {
+                container.textContent = '加载统计信息失败：' + error.message + '，请点击刷新统计重试。';
+            }
+        }
+
+        function escapeHTML(value) {
+            const node = document.createElement('span');
+            node.textContent = String(value ?? '');
+            return node.innerHTML;
+        }
+
+        // 显示统计信息
+        function displayStatistics(stats) {
+            const container = document.getElementById('stats-container');
+            
+            let html = '';
+            
+            for (let [dirName, dirStats] of Object.entries(stats)) {
+                html += `
+                    <div class="stat-card">
+                        <h3>📁 ${escapeHTML(dirName)}</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">文件数量</span>
+                            <span class="stat-value">${dirStats.file_count}</span>
+                        </div>
+                        <div class="stat-item"><span class="stat-label">总记录数</span><span class="stat-value">${dirStats.total_rows}</span></div>
+                        <div class="stat-item"><span class="stat-label">CSV 总大小</span><span class="stat-value">${dirStats.total_size_kb} KB</span></div>
+                        <div class="stat-item"><span class="stat-label">读取异常</span><span class="stat-value">${dirStats.error_count}</span></div>
+                        ${dirStats.file_count === 0 ? '<p>暂无 CSV 文件</p>' : ''}
+                        ${dirStats.file_count > 0 ? '<p class="stat-list-label">文件明细</p>' : ''}
+                        <div class="stat-file-list" tabindex="0" role="region" aria-label="${escapeHTML(dirName)} 文件明细">
+                `;
+                
+                dirStats.files.forEach(file => {
+                    html += `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e8e8e8;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">${escapeHTML(file.name)}</div>
+                            <div class="stat-item">
+                                <span class="stat-label">记录数</span>
+                                <span class="stat-value">${file.rows === null ? '读取失败' : file.rows}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">大小</span>
+                                <span class="stat-value">${file.size_kb} KB</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">修改时间</span>
+                                <span class="stat-value">${file.modified}</span>
+                            </div>
+                            ${file.error ? `<p style="color: #d43f3a;">${escapeHTML(file.error)}</p>` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += '</div></div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 扫描旧文件
+        async function scanOldFiles() {
+            const period = document.getElementById('cleanup-period').value;
+            
+            showAlert('正在扫描旧文件...', 'info');
+            
+            try {
+                const response = await fetch('/api/db/cleanup/scan', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({period: period})
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    scannedFiles = data.files;
+                    displayOldFiles(data.files);
+                    showAlert(`扫描完成！找到 ${data.count} 个文件`, 'success');
+                } else {
+                    showAlert('扫描失败', 'error');
+                }
+            } catch (error) {
+                showAlert('扫描失败: ' + error.message, 'error');
+            }
+        }
+
+        // 显示旧文件列表
+        function displayOldFiles(files) {
+            const container = document.getElementById('cleanup-results');
+            
+            if (files.length === 0) {
+                container.innerHTML = `
+                    <div class="data-card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">✅</div>
+                            <p>没有找到符合条件的文件</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="data-card"><div class="file-info"><h3>📋 扫描结果 (共 ' + files.length + ' 个文件)</h3></div>';
+            html += '<div class="file-list">';
+            
+            files.forEach((file, idx) => {
+                html += `
+                    <div class="file-item">
+                        <input type="checkbox" id="file-${idx}" value="${file.full_path}">
+                        <div class="file-info-text">
+                            <div class="file-name">${file.path}</div>
+                            <div class="file-meta">修改时间: ${file.modified} | 大小: ${file.size_kb} KB</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        // 删除选中文件
+        async function deleteSelectedFiles() {
+            const checkboxes = document.querySelectorAll('#cleanup-results input[type="checkbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                showAlert('请选择要删除的文件', 'error');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${checkboxes.length} 个文件吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            const files = Array.from(checkboxes).map(cb => cb.value);
+            
+            try {
+                const response = await fetch('/api/db/cleanup/delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({files: files})
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert(`删除成功！共删除 ${data.deleted_count} 个文件`, 'success');
+                    // 重新扫描
+                    scanOldFiles();
+                } else {
+                    showAlert('删除失败', 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        // 检查损坏文件
+        async function checkCorruptedFiles() {
+            showAlert('正在检查损坏文件...', 'info');
+            
+            try {
+                const response = await fetch('/api/db/cleanup/check_corrupted');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCorruptedFiles(data.files);
+                    if (data.count === 0) {
+                        showAlert('数据目录检查完成，未发现文件问题。', 'success');
+                    } else {
+                        showAlert(`发现 ${data.count} 个损坏或有问题的文件`, 'error');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('cleanup-results').textContent = '检查失败：' + error.message;
+            }
+        }
+
+        // 显示损坏文件
+        function displayCorruptedFiles(files) {
+            const container = document.getElementById('cleanup-results');
+            
+            if (files.length === 0) {
+                container.innerHTML = `
+                    <div class="data-card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">✅</div>
+                            <p>InputData 和 OutputData 检查完成，未发现文件问题</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按文件类型分组
+            const filesByType = {};
+            files.forEach(file => {
+                const type = file.type || '其他';
+                if (!filesByType[type]) {
+                    filesByType[type] = [];
+                }
+                filesByType[type].push(file);
+            });
+            
+            let html = '<div class="data-card"><div class="file-info">';
+            html += `<h3>⚠️ 损坏文件检测结果 (共 ${files.length} 个问题)</h3>`;
+            html += '<p style="color: #666; margin-top: 10px;">按文件类型分组显示</p>';
+            html += '</div>';
+            
+            // 按类型显示
+            for (const [type, typeFiles] of Object.entries(filesByType)) {
+                html += `<div style="padding: 20px; border-top: 1px solid #e8e8e8;">`;
+                html += `<h4 style="color: #3a86ff; margin-bottom: 15px;">📌 ${type} 文件 (${typeFiles.length})</h4>`;
+                html += '<div class="file-list">';
+                
+                typeFiles.forEach((file) => {
+                    html += `
+                        <div class="file-item">
+                            <div class="file-info-text" style="flex: 1;">
+                                <div class="file-name">${file.path}</div>
+                                <div class="file-meta" style="color: #ff6b6b;">❌ ${file.error}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div></div>';
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'info') {
+            const container = document.querySelector('.tab-content.active') || document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            
+            container.prepend(alert);
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+
+        // 显示/隐藏加载动画
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

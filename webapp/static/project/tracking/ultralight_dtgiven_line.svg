@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="DTgiven 逐样本预测对比">
+<title>DTgiven 逐样本预测对比</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Times New Roman,SimSun,宋体,serif" font-size="13" fill="#526174">
+<text x="360" y="28" text-anchor="middle" font-size="18" fill="#253b58" font-family="Times New Roman,Microsoft YaHei,微软雅黑,sans-serif">DTgiven 逐样本预测对比</text>
+<line x1="80" y1="400.0" x2="690" y2="400.0" stroke="#e5eaf2"/>
+<text x="68" y="404.0" text-anchor="end">0.00</text>
+<line x1="80" y1="332.0" x2="690" y2="332.0" stroke="#e5eaf2"/>
+<text x="68" y="336.0" text-anchor="end">0.16</text>
+<line x1="80" y1="264.0" x2="690" y2="264.0" stroke="#e5eaf2"/>
+<text x="68" y="268.0" text-anchor="end">0.32</text>
+<line x1="80" y1="195.99999999999997" x2="690" y2="195.99999999999997" stroke="#e5eaf2"/>
+<text x="68" y="199.99999999999997" text-anchor="end">0.48</text>
+<line x1="80" y1="128.0" x2="690" y2="128.0" stroke="#e5eaf2"/>
+<text x="68" y="132.0" text-anchor="end">0.64</text>
+<line x1="80" y1="60.0" x2="690" y2="60.0" stroke="#e5eaf2"/>
+<text x="68" y="64.0" text-anchor="end">0.80</text>
+<polyline points="80.000,167.100 115.882,382.150 151.765,202.375 187.647,350.275 223.529,74.025 259.412,379.175 295.294,247.425 331.176,315.000 367.059,254.225 402.941,304.800 438.824,145.850 474.706,398.725 510.588,233.825 546.471,333.700 582.353,216.825 618.235,348.150 654.118,249.550 690.000,311.600" fill="none" stroke="#e7913b" stroke-width="2"/>
+<circle cx="80.000" cy="167.100" r="3.5" fill="#e7913b"><title>样本 1 真实值：0.548000</title></circle>
+<circle cx="115.882" cy="382.150" r="3.5" fill="#e7913b"><title>样本 2 真实值：0.042000</title></circle>
+<circle cx="151.765" cy="202.375" r="3.5" fill="#e7913b"><title>样本 3 真实值：0.465000</title></circle>
+<circle cx="187.647" cy="350.275" r="3.5" fill="#e7913b"><title>样本 4 真实值：0.117000</title></circle>
+<circle cx="223.529" cy="74.025" r="3.5" fill="#e7913b"><title>样本 5 真实值：0.767000</title></circle>
+<circle cx="259.412" cy="379.175" r="3.5" fill="#e7913b"><title>样本 6 真实值：0.049000</title></circle>
+<circle cx="295.294" cy="247.425" r="3.5" fill="#e7913b"><title>样本 7 真实值：0.359000</title></circle>
+<circle cx="331.176" cy="315.000" r="3.5" fill="#e7913b"><title>样本 8 真实值：0.200000</title></circle>
+<circle cx="367.059" cy="254.225" r="3.5" fill="#e7913b"><title>样本 9 真实值：0.343000</title></circle>
+<circle cx="402.941" cy="304.800" r="3.5" fill="#e7913b"><title>样本 10 真实值：0.224000</title></circle>
+<circle cx="438.824" cy="145.850" r="3.5" fill="#e7913b"><title>样本 11 真实值：0.598000</title></circle>
+<circle cx="474.706" cy="398.725" r="3.5" fill="#e7913b"><title>样本 12 真实值：0.003000</title></circle>
+<circle cx="510.588" cy="233.825" r="3.5" fill="#e7913b"><title>样本 13 真实值：0.391000</title></circle>
+<circle cx="546.471" cy="333.700" r="3.5" fill="#e7913b"><title>样本 14 真实值：0.156000</title></circle>
+<circle cx="582.353" cy="216.825" r="3.5" fill="#e7913b"><title>样本 15 真实值：0.431000</title></circle>
+<circle cx="618.235" cy="348.150" r="3.5" fill="#e7913b"><title>样本 16 真实值：0.122000</title></circle>
+<circle cx="654.118" cy="249.550" r="3.5" fill="#e7913b"><title>样本 17 真实值：0.354000</title></circle>
+<circle cx="690.000" cy="311.600" r="3.5" fill="#e7913b"><title>样本 18 真实值：0.208000</title></circle>
+<polyline points="80.000,160.293 115.882,363.322 151.765,223.174 187.647,346.220 223.529,92.385 259.412,384.522 295.294,242.856 331.176,310.820 367.059,251.121 402.941,305.774 438.824,128.985 474.706,378.958 510.588,229.171 546.471,326.982 582.353,224.717 618.235,346.344 654.118,251.539 690.000,313.132" fill="none" stroke="#3a86ff" stroke-width="2"/>
+<circle cx="80.000" cy="160.293" r="3.5" fill="#3a86ff"><title>样本 1 预测值：0.564016</title></circle>
+<circle cx="115.882" cy="363.322" r="3.5" fill="#3a86ff"><title>样本 2 预测值：0.086302</title></circle>
+<circle cx="151.765" cy="223.174" r="3.5" fill="#3a86ff"><title>样本 3 预测值：0.416062</title></circle>
+<circle cx="187.647" cy="346.220" r="3.5" fill="#3a86ff"><title>样本 4 预测值：0.126541</title></circle>
+<circle cx="223.529" cy="92.385" r="3.5" fill="#3a86ff"><title>样本 5 预测值：0.723801</title></circle>
+<circle cx="259.412" cy="384.522" r="3.5" fill="#3a86ff"><title>样本 6 预测值：0.036419</title></circle>
+<circle cx="295.294" cy="242.856" r="3.5" fill="#3a86ff"><title>样本 7 预测值：0.369751</title></circle>
+<circle cx="331.176" cy="310.820" r="3.5" fill="#3a86ff"><title>样本 8 预测值：0.209836</title></circle>
+<circle cx="367.059" cy="251.121" r="3.5" fill="#3a86ff"><title>样本 9 预测值：0.350303</title></circle>
+<circle cx="402.941" cy="305.774" r="3.5" fill="#3a86ff"><title>样本 10 预测值：0.221709</title></circle>
+<circle cx="438.824" cy="128.985" r="3.5" fill="#3a86ff"><title>样本 11 预测值：0.637682</title></circle>
+<circle cx="474.706" cy="378.958" r="3.5" fill="#3a86ff"><title>样本 12 预测值：0.049511</title></circle>
+<circle cx="510.588" cy="229.171" r="3.5" fill="#3a86ff"><title>样本 13 预测值：0.401951</title></circle>
+<circle cx="546.471" cy="326.982" r="3.5" fill="#3a86ff"><title>样本 14 预测值：0.171808</title></circle>
+<circle cx="582.353" cy="224.717" r="3.5" fill="#3a86ff"><title>样本 15 预测值：0.412432</title></circle>
+<circle cx="618.235" cy="346.344" r="3.5" fill="#3a86ff"><title>样本 16 预测值：0.126249</title></circle>
+<circle cx="654.118" cy="251.539" r="3.5" fill="#3a86ff"><title>样本 17 预测值：0.349321</title></circle>
+<circle cx="690.000" cy="313.132" r="3.5" fill="#3a86ff"><title>样本 18 预测值：0.204396</title></circle>
+<text x="80.0" y="425" text-anchor="middle">1</text>
+<text x="187.6470588235294" y="425" text-anchor="middle">4</text>
+<text x="295.2941176470588" y="425" text-anchor="middle">7</text>
+<text x="402.94117647058823" y="425" text-anchor="middle">10</text>
+<text x="510.5882352941176" y="425" text-anchor="middle">13</text>
+<text x="618.2352941176471" y="425" text-anchor="middle">16</text>
+<text x="690.0" y="425" text-anchor="middle">18</text>
+<text x="480" y="50" fill="#d3822d">● 真实值</text>
+<text x="590" y="50" fill="#3a86ff">● 预测值</text>
+<path d="M 80 60 V 400 H 690" fill="none" stroke="#9ba9bd"/>
+<text x="385" y="460" text-anchor="middle">测试样本序号</text>
+<text transform="translate(22 230) rotate(-90)" text-anchor="middle">DTgiven</text>
+</g></svg>

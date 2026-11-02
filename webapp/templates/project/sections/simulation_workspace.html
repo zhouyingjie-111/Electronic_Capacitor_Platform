@@ -1,0 +1,21 @@
+<section class="panel simulation-workspace" id="simulation-workspace" hidden>
+  <div class="panel-header"><h3 id="simulation-heading">Simulink 仿真</h3><button id="simulation-stop" class="btn" type="button">停止仿真</button></div>
+  <div class="simulation-status-line"><span id="simulation-state" role="status" aria-live="polite">准备中</span><span id="simulation-percent"></span></div>
+  <progress id="simulation-progress" max="100" aria-label="仿真进度"></progress>
+  <dl class="simulation-timing"><div><dt>仿真时间</dt><dd id="simulation-time">等待初始化</dd></div><div><dt>目标时间</dt><dd id="simulation-target">等待初始化</dd></div><div><dt>已用时间</dt><dd id="simulation-elapsed">0 s</dd></div></dl>
+  <div class="simulation-scopes" id="simulation-scopes" hidden><h4>示波器波形</h4><div id="simulation-scope-buttons" role="group" aria-label="选择示波器"></div><p class="simulation-description">选择示波器后在网页查看波形；滚轮缩放，拖动平移，移动鼠标读取数值。</p><p id="simulation-scope-feedback" role="status" aria-live="polite"></p>
+    <div id="scope-web-viewer" hidden>
+      <div class="scope-toolbar"><strong id="scope-web-title">波形查看</strong><div class="scope-modes" role="group" aria-label="波形鼠标模式"><button class="btn" id="scope-pan" type="button" aria-pressed="true">拖动平移</button><button class="btn" id="scope-select" type="button" aria-pressed="false">框选放大</button><button class="btn" id="scope-reset" type="button">重置视图</button><button class="btn" id="scope-native" type="button">打开本机示波器</button></div></div>
+      <div class="scope-range"><label for="scope-start">起始时间 / s</label><input id="scope-start" type="number" step="any"><label for="scope-end">结束时间 / s</label><input id="scope-end" type="number" step="any"><button class="btn" type="button" id="scope-apply">应用范围</button></div>
+      <div id="scope-channels" class="scope-channels" role="group" aria-label="显示通道"></div>
+      <p id="scope-web-status" class="scope-web-status" role="status" aria-live="polite"></p>
+      <div id="scope-plots" class="scope-plots"></div>
+      <div id="scope-cursor" class="scope-cursor" aria-live="off">移动鼠标查看采样值</div>
+    </div>
+  </div>
+  <div id="simulation-model-placeholder" class="simulation-model-placeholder">模型画面将在完整导出后显示</div>
+  <div id="simulation-model-viewer" class="simulation-model-viewer" hidden>
+    <div class="simulation-model-toolbar"><span>Simulink 模型画面</span><div><button class="btn" type="button" id="simulation-image-retry" hidden>重新加载</button></div></div>
+    <div class="simulation-model-viewport" id="simulation-model-viewport"><a id="simulation-model-link" class="simulation-model-link" data-image-viewer><img id="simulation-model-image" alt="当前 Simulink 仿真模型"></a></div>
+  </div>
+</section>

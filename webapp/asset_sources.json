@@ -1,0 +1,285 @@
+{
+  "source_pdf": "project_data\\5.决赛报告\\第十二届高校电力电子应用设计大赛决赛报告.pdf",
+  "figures": [
+    {
+      "file": "capacitance_network.png",
+      "pdf_page": 24,
+      "source_image": "IM422.jpg",
+      "size": [
+        1109,
+        352
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "simulation_pi.png",
+      "pdf_page": 29,
+      "source_image": "IM453.jp2",
+      "size": [
+        2048,
+        279
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "simulation_ann.png",
+      "pdf_page": 29,
+      "source_image": "IM455.jp2",
+      "size": [
+        2048,
+        285
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "prototype_converter.png",
+      "pdf_page": 31,
+      "source_image": "IM481.jpg",
+      "size": [
+        435,
+        360
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "prototype_capacitor.png",
+      "pdf_page": 31,
+      "source_image": "IM482.jp2",
+      "size": [
+        1102,
+        825
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "efficiency_setup.png",
+      "pdf_page": 32,
+      "source_image": "IM496.jp2",
+      "size": [
+        1705,
+        906
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "efficiency_result.png",
+      "pdf_page": 32,
+      "source_image": "IM498.jp2",
+      "size": [
+        1543,
+        950
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "pi_20a.png",
+      "pdf_page": 36,
+      "source_image": "IM529.jp2",
+      "size": [
+        1542,
+        756
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "ann_20a.png",
+      "pdf_page": 36,
+      "source_image": "IM531.jp2",
+      "size": [
+        1542,
+        756
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "pi_24a.png",
+      "pdf_page": 36,
+      "source_image": "IM533.jp2",
+      "size": [
+        1553,
+        756
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "ann_24a.png",
+      "pdf_page": 36,
+      "source_image": "IM535.jp2",
+      "size": [
+        1550,
+        756
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "pi_rise.png",
+      "pdf_page": 36,
+      "source_image": "IM537.jp2",
+      "size": [
+        1428,
+        745
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "ann_rise.png",
+      "pdf_page": 36,
+      "source_image": "IM539.jp2",
+      "size": [
+        1380,
+        779
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "pi_fall.png",
+      "pdf_page": 37,
+      "source_image": "IM555.jp2",
+      "size": [
+        1426,
+        779
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "ann_fall.png",
+      "pdf_page": 37,
+      "source_image": "IM557.jp2",
+      "size": [
+        1424,
+        779
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "capacitance_ccs.png",
+      "pdf_page": 40,
+      "source_image": "IM586.jpg",
+      "size": [
+        556,
+        726
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "capacitance_single.png",
+      "pdf_page": 40,
+      "source_image": "IM587.jpg",
+      "size": [
+        1695,
+        770
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "capacitance_combinations.png",
+      "pdf_page": 41,
+      "source_image": "IM594.jpg",
+      "size": [
+        1676,
+        1266
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "background_power_system.png",
+      "pdf_page": 4,
+      "source_image": "IM237.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        2048,
+        1138
+      ]
+    },
+    {
+      "file": "background_tracking_challenge.png",
+      "pdf_page": 5,
+      "source_image": "IM255.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        969,
+        1455
+      ]
+    },
+    {
+      "file": "background_capacitor_voltage.png",
+      "pdf_page": 5,
+      "source_image": "IM257.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        1650,
+        1443
+      ]
+    },
+    {
+      "file": "background_capacitor_topology.png",
+      "pdf_page": 6,
+      "source_image": "IM266.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        1819,
+        1161
+      ]
+    },
+    {
+      "file": "tracking_control_comparison.png",
+      "pdf_page": 9,
+      "source_image": "IM295.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        2048,
+        1315
+      ]
+    },
+    {
+      "file": "capacitance_monitoring_comparison.png",
+      "pdf_page": 23,
+      "source_image": "IM418.jp2",
+      "background": "white, alpha composited to match PDF page appearance",
+      "size": [
+        2048,
+        1307
+      ]
+    },
+    {
+      "file": "tracking_ann_mapping.svg",
+      "pdf_page": 11,
+      "source_image": "IM314.jp2",
+      "adaptation": "Schematic redraw of supplied fully connected layout: five inputs, 8/4 hidden layers, DTgiven output pathway only. Saved two-output model is unchanged."
+    },
+    {
+      "file": "tracking_final_network.png",
+      "pdf_page": 17,
+      "source_image": "IM365.jp2",
+      "size": [
+        2048,
+        741
+      ],
+      "background": "white, alpha composited to match PDF page appearance"
+    },
+    {
+      "file": "tracking_network_supplied.png",
+      "size": [
+        689,
+        281
+      ],
+      "source_attachment": "codex-clipboard-11af9dae-1e34-4a67-80b4-202b750c3667.png"
+    },
+    {
+      "file": "tracking_network_50us.png",
+      "size": [
+        680,
+        281
+      ],
+      "source_attachment": "codex-clipboard-89bc8296-b195-463d-a7b0-22e010a7f375.png"
+    },
+    {
+      "file": "tracking_network_40_60us.png",
+      "size": [
+        687,
+        281
+      ],
+      "source_attachment": "codex-clipboard-5c75db93-f6be-41b7-82c7-006efbc12572.png"
+    }
+  ]
+}

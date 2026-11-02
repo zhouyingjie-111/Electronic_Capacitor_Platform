@@ -1,0 +1,17 @@
+.cap-workbench .feedback { margin:12px 0; }
+.cap-feature-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px; }
+.cap-feature-grid figure { margin:0;border:1px solid #dde7f4;border-radius:10px;overflow:hidden;background:#fff; }
+.cap-feature-grid img { display:block;width:100%;height:96px;object-fit:contain;padding:10px;background:#fafcff;image-rendering:pixelated; }
+.cap-feature-grid figcaption { padding:10px 14px;font-size:14px; }
+.cap-preview-heading { display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 14px;color:#425679; }
+.cap-preview-heading label { font-family:var(--font-heading);font-size:15px; }
+.cap-preview-heading select { min-width:140px;max-width:100%; }
+.cap-preview-heading span { margin-left:auto;color:#6b7c96;font-size:14px; }
+.cap-file-table { max-height:330px;overflow:auto; }
+.cap-file-table thead { position:sticky;top:0;background:#f2f7ff;z-index:1; }
+.cap-loss-figure { max-width:740px;margin:20px auto 0; }
+.cap-result-figures figure,.cap-loss-figure figure { margin:0;border:1px solid #dde7f3;border-radius:12px;overflow:hidden; }
+.cap-result-figures img,.cap-loss-figure img { display:block;width:100%;max-height:300px;object-fit:contain;background:#fff; }
+.cap-prepare-output { margin-top:22px; }
+#cap-training-form [hidden],.cap-workbench [hidden] { display:none!important; }
+@media(max-width:700px) { .cap-feature-grid { grid-template-columns:1fr; }.cap-feature-grid img { height:110px; }.cap-preview-heading { align-items:flex-start; }.cap-preview-heading span { width:100%;margin:0; } }

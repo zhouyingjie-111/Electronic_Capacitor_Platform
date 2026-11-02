@@ -1,0 +1,58 @@
+{
+  "check": "TensorFlow versus independent scalar C-order Python kernels; not board execution",
+  "max_abs_error_per_output": [
+    0.0,
+    6.103515625e-05,
+    0.0,
+    6.103515625e-05,
+    0.0,
+    2.9802322387695312e-08,
+    0.0,
+    2.9802322387695312e-08
+  ],
+  "weights_sha256": "4eac53b2a731c74af6fbd59c1d2679b36792bf73c7b9b60a932781c1b8937321",
+  "network_parameter_count": 1528,
+  "float_weight_bytes_8bit": 6112,
+  "cnn_MAC_upper_bound": 28928,
+  "preprocessing_and_model_contract": {
+    "physical_units": [
+      "V",
+      "A",
+      "A"
+    ],
+    "output_units": [
+      "uF",
+      "uF",
+      "uF",
+      "uF",
+      "Ohm",
+      "Ohm",
+      "Ohm",
+      "Ohm"
+    ],
+    "input_layout": "HWC",
+    "shape": [
+      6,
+      32,
+      3
+    ],
+    "sample_dt_s": 1e-05,
+    "samples_per_window": 1024,
+    "wavelet": "5-level Haar D1..D5,A5",
+    "conv1_padding_TBLR": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "conv2_padding_TBLR": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "scope_voltage_offset_v": 200.0,
+    "scope_decimation": "offline resample_poly Kaiser8.6; target hardware requires appropriate analog filtering",
+    "deployment_status": "C source exported; target compile and board validation separate"
+  }
+}

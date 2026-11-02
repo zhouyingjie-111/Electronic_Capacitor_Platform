@@ -1,0 +1,47 @@
+{% extends "project/base.html" %}
+{% block title %}{{ info.title }} · {{ project_name }}{% endblock %}
+{% block body_class %}detail-page{% endblock %}
+{% macro resource_link(id, label) -%}
+<a class="btn" href="{{ url_for('project.resource', resource_id=id) }}">{{ label }}</a>
+{%- endmacro %}
+{% macro figure(file, label) -%}
+{% set preview = 'previews/' + file[:-4] + '.webp' if file.endswith('.png') else file %}
+{% set dimensions = figure_sizes.get(file) %}
+<figure><a href="{{ url_for('project.static', filename='figures/' + file) }}" data-image-viewer><img src="{{ url_for('project.static', filename='figures/' + preview) }}" alt="{{ label }}" {% if dimensions %}width="{{ dimensions[0] }}" height="{{ dimensions[1] }}"{% endif %} loading="lazy" decoding="async"></a><figcaption>{{ label }}<br><span class="source">点击图片放大查看</span></figcaption></figure>
+{%- endmacro %}
+{% block body %}
+<main class="page-shell">
+  {% include "project/nav.html" %}
+  <section class="page-hero">
+
+    <h2>{{ info.title }}</h2>{% if section != 'algorithm' %}<p>{% if section == 'experiments' %}{{ '连接实验设备，查看脉冲负载电流与控制状态。' if page == 'tracking' else '连接实验设备，查看电容参数与器件状态。' }}{% else %}{{ info.description }}{% endif %}</p>{% endif %}
+  </section>
+  <nav class="section-nav" aria-label="功能内容导航">
+    {% for key, label in sections %}<a href="{{ url_for('project.page', page=page, section=key) }}" {% if section == key %}class="active" aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+  </nav>
+  <div class="section-content" data-current-section="{{ section }}">
+  {% if page == 'tracking' %}
+  {% if section == 'background' %}
+  {% include "project/sections/tracking_background.html" %}
+  {% elif section == 'algorithm' %}
+  {% include "project/sections/tracking_overview.html" %}
+  {% elif section == 'simulation' %}
+  {% include "project/sections/tracking_simulation.html" %}
+  {% elif section == 'experiments' %}
+  {% include "project/sections/tracking_experiments.html" %}
+  {% endif %}
+  {% elif page == 'capacitance' %}
+  {% if section == 'background' %}
+  {% include "project/sections/capacitance_background.html" %}
+  {% elif section == 'algorithm' %}
+  {% include "project/sections/capacitance_overview.html" %}
+  {% elif section == 'simulation' %}
+  {% include "project/sections/capacitance_simulation.html" %}
+  {% elif section == 'experiments' %}
+  {% include "project/sections/capacitance_experiments.html" %}
+  {% endif %}
+  {% endif %}
+  </div>
+  {% if section not in ('experiments', 'simulation') %}{% include "project/sections/experiment_actions.html" %}{% endif %}
+</main>
+{% endblock %}

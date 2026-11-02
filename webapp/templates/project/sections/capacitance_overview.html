@@ -1,0 +1,9 @@
+  <div class="stats-grid"><div class="stat"><strong>3 路</strong><span>电压、电容阵列总电流、负载电流</span></div><div class="stat"><strong>1024 点</strong><span>100 kHz 采样窗口</span></div><div class="stat"><strong>6 × 32 × 3</strong><span>小波能量灰度输入</span></div><div class="stat"><strong>8 个参数</strong><span>四个固定位置的 C 与 ESR</span></div></div>
+  <section class="panel" id="recognition-pipeline"><h3>无侵入参数识别流程</h3><div class="pipeline">
+    <div class="step"><span>01 / 采集</span><b>三路实测数据</b></div>
+    <div class="step"><span>02 / 预处理</span><b>Haar 小波特征</b></div>
+    <div class="step"><span>03 / 推理</span><b>轻量化 CNN</b></div>
+    <div class="step"><span>04 / 监测</span><b>容值与 ESR</b></div>
+  </div></section>
+  <details class="panel simulation-reference"><summary><span class="simulation-reference-title">轻量化 CNN 网络结构</span><span class="simulation-reference-hint"><span class="simulation-reference-expand">展开</span><span class="simulation-reference-collapse">收起</span></span></summary><div class="simulation-reference-content"><div class="full-figure">{{ figure('capacitance_network.png', 'Haar 小波能量特征与轻量化 CNN') }}</div></div></details>
+  {% include "project/sections/capacitance_training.html" %}

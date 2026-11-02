@@ -1,0 +1,27 @@
+<section class="panel background-intro" id="tracking-background">
+  <h3>为什么需要快速追踪？</h3>
+  <p class="background-lead">脉冲负载在短时间内吞吐较大功率。如何快速补偿功率波动，是保障直流母线稳定运行的关键。</p>
+  <div class="background-grid">
+    <article class="background-card">
+      <span class="background-kicker">01 / 应用需求</span>
+      <h4>负载功率增长，母线扰动加剧</h4>
+      <p>机载电源功率容量持续提升。高峰均比、低频脉动负载带来的功率波动，需要通过主动平抑进行缓冲。</p>
+      {{ figure('background_power_system.png', '机载电源系统功率容量发展趋势') }}
+    </article>
+    <article class="background-card">
+      <span class="background-kicker">02 / 控制挑战</span>
+      <h4>传统控制难以兼顾速度与超调</h4>
+      <p>脉冲边沿的跟踪滞后会引起瞬态电流尖峰。引入 ANN 预测瞬态控制量，与 PI 协同改善动态响应。</p>
+      {{ figure('background_tracking_challenge.png', '传统控制下的跟踪滞后与输入电流尖峰') }}
+    </article>
+  </div>
+</section>
+<section class="panel diagram-explainer" id="tracking-control-approach">
+  <div class="diagram-copy">
+    <span class="output-badge">控制思路</span>
+    <h3>从人工整定到状态映射</h3>
+    <p><strong>传统控制</strong>依赖模型分析、参数整定与误差反馈，脉冲突变时的跟踪速度受到更新环节限制。</p>
+    <p><strong>ANN 协同控制</strong>从仿真样本中学习系统状态与瞬态占空比的映射，在线预测控制量，并与 PI 配合完成瞬态与稳态控制。</p>
+  </div>
+  <div class="diagram-visual">{{ figure('tracking_control_comparison.png', '传统控制与 AI 控制方法对比') }}</div>
+</section>

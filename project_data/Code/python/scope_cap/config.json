@@ -1,0 +1,59 @@
+{
+  "data_dir": "../../../InputData/capacitance_scope",
+  "output_dir": "../../../OutputData/scope_cap_v1",
+  "channel_order": [
+    1,
+    3,
+    4
+  ],
+  "voltage_add_v": 200.0,
+  "target_dt_s": 1e-05,
+  "window_samples": 1024,
+  "wavelet_levels": 5,
+  "image_columns": 32,
+  "train_stride": 128,
+  "eval_stride": 1024,
+  "split_fractions": [
+    0.6,
+    0.2,
+    0.2
+  ],
+  "split_guard_samples": 32,
+  "seed": 42,
+  "epochs": 300,
+  "patience": 60,
+  "batch_size": 16,
+  "learning_rate": 0.001,
+  "labels": {
+    "0000": [
+      505.2,
+      505.2,
+      505.2,
+      505.2,
+      0.32,
+      0.32,
+      0.32,
+      0.32
+    ],
+    "0001": [
+      505.2,
+      505.2,
+      505.2,
+      602.2,
+      0.32,
+      0.32,
+      0.32,
+      0.24
+    ],
+    "0100": [
+      505.2,
+      602.2,
+      505.2,
+      505.2,
+      0.32,
+      0.24,
+      0.32,
+      0.32
+    ]
+  }
+}

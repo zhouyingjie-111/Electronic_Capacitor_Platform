@@ -1,0 +1,73 @@
+{
+    "target": {
+        "device": "TMS320F28P550SJ9PZ / F28P55x",
+        "execution": "C28x_CPU_float32",
+        "uses_npu": false
+    },
+    "training_compatibility": {
+        "training_logic_changed": false,
+        "note": "Hidden layers reduced to 8/4 (two hidden layers). Data split, scaler, AdamW, scheduler, early stopping, dropout and multi-seed validation selection are unchanged. Static full ONNX optionally folds affine scaling after equivalence checks. Accuracy and the 100us latency target require validation; neither is guaranteed.",
+        "selected_seed": 242,
+        "best_epoch": 1945,
+        "best_validation_scaled_mse": 0.03521653637290001
+    },
+    "model": {
+        "raw_inputs": [
+            "P_peak",
+            "T_rise_fall",
+            "VC1",
+            "VG1",
+            "direction_state"
+        ],
+        "outputs": [
+            "DTgiven",
+            "DSsample"
+        ],
+        "hidden_dims": [
+            8,
+            4
+        ],
+        "dropout_training": 0.05,
+        "activation": "ReLU",
+        "parameter_count": 94,
+        "parameter_storage_float32_bytes": 376,
+        "dense_mac_per_inference": 80,
+        "latency_target_us": 100.0,
+        "latency_measured_us": null,
+        "latency_target_verified": false
+    },
+    "onnx": {
+        "core_onnx": "project_data\\OutputData\\ann_up_down_5in2out_final_ultralight\\ann_up_down_5in2out_core.onnx",
+        "full_onnx": "project_data\\OutputData\\ann_up_down_5in2out_final_ultralight\\ann_up_down_5in2out_full.onnx",
+        "static_full_onnx": "project_data\\OutputData\\ann_up_down_5in2out_final_ultralight\\ann_up_down_5in2out_full_static.onnx",
+        "static_scaler_folded": true,
+        "folding_max_abs_error": 1.4901161193847656e-07,
+        "verification": {
+            "enabled": true,
+            "performed": true,
+            "core_max_abs_error": 2.384185791015625e-07,
+            "full_max_abs_error": 2.9802322387695312e-08,
+            "passed": true,
+            "static_full_max_abs_error": 1.4901161193847656e-07,
+            "static_full_passed": true
+        }
+    },
+    "dsp_runtime_files": [
+        "ann_inference.c",
+        "ann_inference.h",
+        "ann_test_vectors.h",
+        "ann_dsp_self_test.c",
+        "ann_dsp_self_test.h",
+        "ann_dsp_integration_example.c"
+    ],
+    "pc_model_files": [
+        "ann_up_down_5in2out.h5",
+        "ann_up_down_5in2out_checkpoint.pth",
+        "ann_up_down_5in2out_state_dict.pth",
+        "ann_up_down_5in2out_torchscript.pt",
+        "ann_up_down_5in2out_core.onnx",
+        "ann_up_down_5in2out_full.onnx",
+        "ann_up_down_5in2out_full_static.onnx",
+        "ann_up_down_5in2out_parameters.npz"
+    ]
+}

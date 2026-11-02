@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ project_name }} · AI+电力电子{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='portal.css') }}">
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='typography.css') }}">
+  <script src="{{ url_for('project.static', filename='portal.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='simulation.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='scope_viewer.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='training.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='capacitance_training.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='capacitance_training.css') }}">
+  <script src="{{ url_for('project.static', filename='image_viewer.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='serial.js') }}" defer></script>
+  {% if page is defined %}
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='chat.css') }}">
+  <link rel="stylesheet" href="{{ url_for('project.static', filename='vendor/katex.min.css') }}">
+  <script src="{{ url_for('project.static', filename='vendor/marked.umd.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='vendor/purify.min.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='vendor/katex.min.js') }}" defer></script>
+  <script src="{{ url_for('project.static', filename='chat.js') }}" defer></script>
+  {% endif %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <header class="site-header">
+    <h1 class="brand">AI+电力电子</h1>
+    <p>{{ project_name }} · 智能控制与状态监测平台</p>
+  </header>
+  {% block body %}{% endblock %}
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="图片放大查看">
+    <div class="image-viewer-toolbar"><span id="image-viewer-title">图片预览</span><div><button type="button" class="btn" id="image-viewer-fit">适应窗口</button><button type="button" class="btn" id="image-viewer-zoom">局部放大</button><button type="button" class="btn" id="image-viewer-close" aria-label="关闭图片预览">关闭 ×</button></div></div>
+    <div class="image-viewer-canvas" id="image-viewer-canvas"><img id="image-viewer-image" alt=""></div>
+    <p class="image-viewer-status" id="image-viewer-status" role="status"></p>
+  </dialog>
+</body>
+</html>
