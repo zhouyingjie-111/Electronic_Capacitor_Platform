@@ -60,10 +60,10 @@ class CapacitanceTests(unittest.TestCase):
 
     def test_dataset_zip_traversal_labels_and_unexecuted_attachments(self):
         with tempfile.TemporaryDirectory() as folder:
-            for extra in [("../outside.csv", "bad"), ("labels.json", '{"0000":[1]}')]:
+            for case, extra in enumerate([("../outside.csv", "bad"), ("labels.json", '{"0000":[1]}')]):
                 with self.assertRaises(TrainingError):
                     unpack_dataset(
-                        dataset_zip(extra), Path(folder) / str(time.time_ns()), LABELS
+                        dataset_zip(extra), Path(folder) / f"invalid-{case}", LABELS
                     )
             dest = Path(folder) / "ok"
             unpack_dataset(
