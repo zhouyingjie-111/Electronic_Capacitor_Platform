@@ -20,3 +20,7 @@
 *.a binary
 *.lib binary
 *.whl binary
+
+# Preserve the supplied CCS source encoding, line endings and prebuilt model libraries.
+firmware/PI_ANN_CNN_SCI_CPU/** -text
+firmware/PI_ANN_CNN_SCI_NPU/** -text

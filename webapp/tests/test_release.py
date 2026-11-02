@@ -25,10 +25,14 @@ class ReleaseTests(unittest.TestCase):
 
     def test_cap_voltage_source_is_separate_from_tracking(self):
         firmware = ROOT / "firmware/PI_ANN_CNN_SCI_Web_Monitor/portal_sci.c"
+        if not firmware.is_file():
+            self.skipTest("独立网页包不含 DSP 固件，固件通道检查由完整仓库执行。")
         code = firmware.read_text(encoding="utf-8")
         self.assertIn("capMonitorValues[0]=sample->Vc1;", code)
         self.assertNotIn("capMonitorValues[0]=sample->Vs1;", code)
         self.assertIn("values[2]=sample->Vs1; values[3]=sample->Vc1;", code)
+
+    def test_cap_voltage_browser_mapping(self):
         js = (ROOT / "webapp/static/project/serial.js").read_text(encoding="utf-8")
         self.assertIn("vc1:frame.data.vg1", js)
 

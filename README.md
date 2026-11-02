@@ -164,7 +164,7 @@ D_T_UP_given, D_T_DOWN_given, PWM_S_UP_first, PWM_S_DOWN_first
 
 在对应功能的“仿真验证”页选择模型、设置仿真时间和参数，再打开或运行模型。快速追踪提供 PI、ANN、自定义控制三种入口；电容辨识使用独立的 CNN 仿真模型。
 
-运行后可查看进度和示波器波形。**仅查看模型时不会启动仿真**；已有仿真结果通过独立区域展开，电容辨识的结果对比区留待补充。
+运行后可查看进度和示波器波形。**仅查看模型时不会启动仿真**；快速追踪的已有仿真记录可独立展开。
 
 ### 串口通信
 
@@ -215,7 +215,118 @@ python -m pip install -r requirements-training.txt
 
 MATLAB Engine 需根据本机 MATLAB 版本安装到调用它的 Python 环境。TI MCU NNC、CCS、C2000Ware、SysConfig 等专用工具需单独安装。
 
-配套控制工程位于 [`firmware/PI_ANN_CNN_SCI_Web_Monitor`](firmware/PI_ANN_CNN_SCI_Web_Monitor)，使用 `CPU1_FLASH` 配置；导入 CCS 后需配置本机工具链路径。仓库中的 `mod.a` 为模型库输入，不能当作缓存删除。网页不自动烧录开发板。
+CPU / NPU 控制工程与导入步骤见下方“DSP 控制工程”。仓库中的 `mod.a` 为对应模型库输入，不能当作缓存删除，也不能在两套工程间直接混用。网页不自动烧录开发板。
+
+</details>
+
+## DSP 控制工程
+
+| 工程 | ANN 推理实现 | CNN 参数辨识 | 工程入口 |
+| :--- | :--- | :--- | :--- |
+| **CPU 版本** | CPU 执行配套模型库，控制侧取输出 `[0]` 作为 DTgiven | CPU 后台分步执行 | [`PI_ANN_CNN_SCI_CPU`](firmware/PI_ANN_CNN_SCI_CPU) |
+| **NPU 版本** | NPU 执行配套 ANN，CPU 负责输入归一化、完成处理与结果反归一化 | 仍由 CPU 后台分步执行 | [`PI_ANN_CNN_SCI_NPU`](firmware/PI_ANN_CNN_SCI_NPU) |
+
+两套工程保留附件中的控制源文件、模型库、链接脚本、SysConfig 与 CCS 工程配置；不收录构建输出和编辑器缓存。原有 [`PI_ANN_CNN_SCI_Web_Monitor`](firmware/PI_ANN_CNN_SCI_Web_Monitor) 保留为先前串口监测工程。
+
+### 导入与运行
+
+1. 在 CCS 中导入需要的 CPU 或 NPU 工程，选择 **`CPU1_FLASH`** 构建配置。
+2. 确认目标器件为 **TMS320F28P550SJ9**，配置本机 C2000Ware、SysConfig 和 C2000 编译器。附件配置记录的 C2000Ware 产品版本为 **26.1.0.00**，编译器工具链系列为 **25.11**；实际安装路径需与本机环境一致。
+3. 由 `c2000.syscfg` 重新生成板级文件，再构建工程。`driverlib.lib` 通过 C2000Ware 路径解析，`mod.a` 与 `tvmgen_default.h` 使用同一工程附带的一组文件。
+4. 连接匹配的开发板，按原工程调试流程烧录并运行。电流、电压的偏置与增益以实际硬件标定为准；本仓库不把软件测试结果作为上板验证结论。
+5. 启动网页，在“实验结果”选择对应串口，查看监测数据；需要辨识时点击“开始辨识”。
+
+### 程序运行流程
+
+ADC 中断执行采样、PI 更新与 PWM 写入，主循环优先处理 ANN 请求；没有待处理 ANN 请求时，再推进一小步电容辨识和串口轮询。
+
+```mermaid
+flowchart TD
+    BOOT["上电 / 复位"] --> INIT["Device、GPIO、PIE 与 Board 初始化"]
+    INIT --> SETUP["ADC 标定、PI 状态、Timer0、CNN 与串口初始化"]
+    SETUP --> ENABLE["启用中断"]
+    ENABLE --> LOOP{"ANN 启动条件满足且有待处理请求？"}
+    LOOP -->|是| SNAP["短临界区读取该方向的输入快照"]
+    SNAP --> INFER["NN_runOnce：CPU 或 NPU 推理"]
+    INFER --> VALID{"返回成功且 DTgiven 在允许范围内？"}
+    VALID -->|是| SAVE["更新上升 / 下降占空比缓存与有效标志"]
+    VALID -->|否| KEEP["不发布本次无效结果"]
+    SAVE --> FREE{"仍有 ANN 请求？"}
+    KEEP --> FREE
+    LOOP -->|否| FREE
+    FREE -->|有| LOOP
+    FREE -->|无| CAP["CapBackground_Task：分步辨识与结果发布"]
+    CAP --> SERIAL["再次检查请求，允许时执行 PortalSCI_poll"]
+    SERIAL --> LOOP
+    ENABLE -.-> ADC["ADC 中断：采样 → 标定滤波 → 边沿检测 → PI / PWM → 采样入队"]
+    ADC -.-> REQ["Vin 达到启动门槛后，边沿快照置 AnnUpdateReq"]
+    REQ -.-> LOOP
+```
+
+当前附件在滤波 `Vin ≥ 265 V` 后置位 `AnnStartEnable`。ANN 输入顺序为峰值电流、边沿时间、两路电压和上升/下降标志；对应 `g_nnInput[0..4]`。输入快照在边沿保存，主循环计算并更新缓存，实时中断不等待神经网络计算结束。
+
+### 双环控制与 ANN 协同框图
+
+```mermaid
+flowchart LR
+    REF["电压参考 0.75 × Vin"] --> VE["电压误差：参考 − Vc1"]
+    VFB["滤波 Vc1"] --> VE
+    VE --> VPI["电压 PI / 限幅 ±0.8"]
+    VPI --> IREF["电流参考 0.5 × (io − Ioav) − 电压环输出"]
+    LOAD["io、Ioav"] --> IREF
+    IREF --> IE["电流误差：参考 − iL1"]
+    IL["滤波 iL1"] --> IE
+    IE --> IPI["电流 PI / 占空比限幅 0～0.95"]
+    IPI --> SEL{"PWM 写入值选择"}
+    IO["负载电流边沿检测"] --> SNAP["五输入快照 / 主循环 ANN 推理"]
+    SNAP --> BUF["上升 / 下降 DTgiven 缓存"]
+    BUF --> EDGE["边沿方向、修正量、有效位与保持窗口"]
+    EDGE --> SEL
+    SEL -->|正常稳态或未满足 ANN 接管条件| DPI["PI 占空比"]
+    SEL -->|有效边沿保持窗口| DANN["缓存瞬态占空比"]
+    DPI --> PWM["CMPA 换算 / EPWM1、EPWM2 写入"]
+    DANN --> PWM
+    PWM --> PLANT["双通道功率电路"]
+    PLANT -.采样反馈.-> VFB
+    PLANT -.采样反馈.-> IL
+    PLANT -.负载采样.-> IO
+```
+
+图中 `Vc1`、`iL1` 等名称按源码结构字段表达。两套附件均持续更新 PI 状态，ANN 的接管发生在最终 `CMPA` 写入选择处；上升沿保持 2 次、下降沿保持 3 次 ADC 更新。两方向结果均有效且满足边沿条件时，才使用瞬态占空比缓存。
+
+### 电容辨识与监测流程
+
+```mermaid
+flowchart LR
+    CMD["网页开始辨识 / CAPTURE"] --> ARM["检查启动状态、时钟与标定快照"]
+    ARM --> ACQ["ADC 中断收集三路原始量 / 1024 点"]
+    ACQ --> WAV["主循环分批标定与 Haar 小波处理"]
+    WAV --> IMG["能量特征图"]
+    IMG --> CNN["轻量化 CNN 分步推理"]
+    CNN --> CHECK["检查 8 个输出的数值与范围"]
+    CHECK --> RESULT["C1～C4、ESR1～ESR4 / 状态与耗时"]
+    RESULT --> UART["轮询式 SCI 发送"]
+    UART --> WEB["网页数值与检测趋势"]
+```
+
+此流程不修改 PWM 控制量。附件中的三路原始量使用 `ADC_Sample_Raw.Vs1`、`ic`、`io`，标定参数在启动辨识时从 `main.c` 定义的采样偏置与增益结构读取。网页名称、结构字段与物理接线需结合当前工程的实际通道映射理解，不应仅按变量缩写重新接线。
+
+<details>
+<summary><strong>CPU / NPU 的运行状态与耗时查看</strong></summary>
+
+| 观察量 | 含义 |
+| :--- | :--- |
+| `g_nnReturnCode` / `g_nnTestState` | 最近一次 ANN 返回值与状态；正常完成时分别为 `0` / `2` |
+| `g_nnSampleCount` | 已成功完成的 ANN 次数 |
+| `g_nnTimeUs` / `g_annTimeUs` | 最近一次推理调用测得的耗时，包含调用期间控制中断抢占的影响 |
+| `g_nnTimeFirstUs` / `g_nnTimeMinUs` / `g_nnTimeMaxUs` | 首次与历史最小、最大推理耗时 |
+| `g_nnNpuInitOK` | NPU 版本硬件初始化状态 |
+| `g_nnNpuIrqCount` / `g_nnNpuLastIrqDelta` | NPU 完成事件累计值与本次增量；当前配套 ANN 成功条件包含本次增量等于 `3` |
+| `g_nnNpuFaultLatched` | NPU 版本故障锁存；错误后不自动改用 CPU 重新推理 |
+| `g_capState` / `g_capFault` / `g_capValid` | 电容辨识状态、故障位与结果有效标志 |
+| `g_capInferUs` / `g_capPreprocessUs` | 电容辨识累计推理与预处理耗时 |
+
+NPU 版本通过 `ann_npu_adapter.c` 启动配套硬件模型；`nn_npu_platform.c` 注册 NPU 完成中断，ISR 记录事件，主循环调用辅助处理并检查完成状态。当前超时阈值为 1000 μs，超时或完成检查失败会记录故障。SCI 使用主循环轮询，不增加 SCI 收发中断；NPU 完成中断与控制中断并存，其实际时序影响需上板测量。
 
 </details>
 
@@ -237,7 +348,7 @@ AI-Power-Electronics-Platform/
 │  ├─ InputData/                # 默认输入与示波器数据
 │  ├─ OutputData/               # 汇总数据与已保存结果
 │  └─ Simulink/                 # 仿真模型
-├─ firmware/                    # 配套 CCS 控制工程
+├─ firmware/                    # CPU / NPU 与原有监测 CCS 工程
 ├─ wheels/                      # Windows / Python 3.10 离线基础依赖
 ├─ docs/images/                 # 真实界面预览
 └─ .vscode/                     # 可共享的启动与调试配置
