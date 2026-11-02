@@ -3,6 +3,7 @@
 # 仿真边界：只运行允许的模型；参数由请求校验后传给 MATLAB 桥接层。网页查询进度与结果，不在 HTTP 请求中等待仿真。
 
 import importlib
+import io
 import json
 import logging
 import math
@@ -42,6 +43,7 @@ SCOPE_NAMES = {
     "voltage": "电压",
     "current": "电流",
     "switch": "开关",
+    "tracking": "追踪情况",
     "model_input": "模型输入",
 }
 
@@ -88,13 +90,34 @@ class SimulationRunner:
         engine = import_engine()
         shared = "PowerElectronicsPortal"
         if shared in engine.find_matlab():
-            return engine.connect_matlab(shared)
+            try:
+                return engine.connect_matlab(shared)
+            except engine.EngineError:
+                # Killed web processes may leave a stale shared-session record.
+                pass
         pending = engine.start_matlab("-desktop", background=True)
         connection = pending.result(timeout=180)
         connection.eval(
             "matlab.engine.shareEngine('PowerElectronicsPortal');", nargout=0
         )
         return connection
+
+    def _matlab(self, function, *args, **kwargs):
+        """Capture MATLAB warnings/build chatter; never swallow real exceptions."""
+        output, errors = io.StringIO(), io.StringIO()
+        try:
+            return function(*args, stdout=output, stderr=errors, **kwargs)
+        finally:
+            captured = output.getvalue() + errors.getvalue()
+            if captured:
+                with self.lock:
+                    job = self.jobs.get(self.active_id)
+                    folder = job.get("_folder") if job else None
+                if folder is not None:
+                    with (Path(folder) / "matlab-output.log").open(
+                        "a", encoding="utf-8"
+                    ) as stream:
+                        stream.write(captured)
 
     def ann_function(self):
         from simulation_model import ann_function
@@ -202,9 +225,9 @@ class SimulationRunner:
             model_copy = folder / (name + ".slx")
             if job["_source"] is not None:
                 shutil.copy2(job["_source"], model_copy)
-            self.engine.addpath(str(MATLAB_HELPERS), nargout=0)
+            self._matlab(self.engine.addpath,str(MATLAB_HELPERS), nargout=0)
             result = json.loads(
-                self.engine.portal_open_model(
+                self._matlab(self.engine.portal_open_model,
                     json.dumps(
                         {
                             "model_path": (
@@ -367,7 +390,7 @@ class SimulationRunner:
             if not any(scope["id"] == scope_id for scope in job["scopes"]):
                 raise SimulationRequestError("本次仿真未找到该示波器。", 404)
             try:
-                self.engine.portal_simulation(
+                self._matlab(self.engine.portal_simulation,
                     "open_scope",
                     json.dumps(
                         {
@@ -476,7 +499,7 @@ class SimulationRunner:
             self._update(
                 job_id, state=stage, message="正在打开 Simulink 模型并生成画面…"
             )
-            engine.addpath(str(MATLAB_HELPERS), nargout=0)
+            self._matlab(engine.addpath,str(MATLAB_HELPERS), nargout=0)
             model = self.models[job["control"]]
             # Separate model name per job keeps source files and past scope data intact.
             model_name = "portal_" + job["control"] + "_" + job_id[:12]
@@ -509,13 +532,13 @@ class SimulationRunner:
                     "scopes",
                     [
                         {"id": key, "name": SCOPE_NAMES[key]}
-                        for key in ("voltage", "current", "switch")
+                        for key in ("voltage", "current", "switch", "tracking")
                     ],
                 ),
                 "block_parameters": model.get("block_parameters", []),
             }
             prepared = json.loads(
-                engine.portal_simulation(
+                self._matlab(engine.portal_simulation,
                     "prepare", json.dumps(configuration, ensure_ascii=False), nargout=1
                 )
             )
@@ -545,18 +568,18 @@ class SimulationRunner:
                 stop_time=prepared["stop_time"],
             )
             if job["_stop"].is_set():
-                engine.portal_simulation("stop", "", nargout=0)
+                self._matlab(engine.portal_simulation,"stop", "", nargout=0)
                 self._update(job_id, state="stopped", message="已取消仿真。")
                 return
             stage = "initializing"
             self._update(job_id, state=stage, message="模型已打开，正在编译与初始化…")
-            engine.portal_simulation("start", "", nargout=0)
+            self._matlab(engine.portal_simulation,"start", "", nargout=0)
             while True:
                 if job["_stop"].is_set():
-                    engine.portal_simulation("stop", "", nargout=0)
+                    self._matlab(engine.portal_simulation,"stop", "", nargout=0)
                     self._update(job_id, state="stopped", message="仿真已停止。")
                     break
-                status = json.loads(engine.portal_simulation("status", "", nargout=1))
+                status = json.loads(self._matlab(engine.portal_simulation,"status", "", nargout=1))
                 current, start, stop = (
                     status.get(k)
                     for k in ("simulation_time", "start_time", "stop_time")
@@ -578,7 +601,7 @@ class SimulationRunner:
                     )
                     try:
                         exported = json.loads(
-                            engine.portal_simulation("export_waveforms", "", nargout=1)
+                            self._matlab(engine.portal_simulation,"export_waveforms", "", nargout=1)
                         )
                         if (
                             not exported.get("ready")
@@ -628,13 +651,13 @@ class SimulationRunner:
             self._update(job_id, state="failed", message=message)
             if self.engine is not None:
                 try:
-                    self.engine.portal_simulation("stop", "", nargout=0)
+                    self._matlab(self.engine.portal_simulation,"stop", "", nargout=0)
                 except Exception:
                     self.engine = None
         finally:
             if self.engine is not None:
                 try:
-                    self.engine.portal_simulation("release", "", nargout=0)
+                    self._matlab(self.engine.portal_simulation,"release", "", nargout=0)
                 except Exception:
                     LOG.exception("Could not release simulation %s", job_id)
             self._update(job_id, finished_at=time.time())

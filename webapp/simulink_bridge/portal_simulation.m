@@ -1,6 +1,6 @@
 function result = portal_simulation(action, configuration)
 % Local website bridge. The source SLX file is never saved or edited.
-persistent sm mdl startTime stopTime cacheConfig waveformDir scopeRecords
+persistent sm mdl startTime stopTime cacheConfig waveformDir scopeRecords warningConfig
 result = '';
 switch action
     case 'prepare'
@@ -9,6 +9,8 @@ switch action
         end
         sm = [];
         cfg = jsondecode(configuration);
+        warningConfig = warning;
+        warning('off', 'all');
         cacheConfig = Simulink.fileGenControl('getConfig');
         Simulink.fileGenControl('set', 'CacheFolder', cfg.cache_dir, ...
             'CodeGenFolder', fullfile(cfg.cache_dir, 'codegen'), 'createDir', true);
@@ -136,6 +138,10 @@ switch action
         end
     case 'release'
         sm = [];
+        if ~isempty(warningConfig)
+            warning(warningConfig);
+            warningConfig = [];
+        end
         if ~isempty(cacheConfig)
             Simulink.fileGenControl('setConfig', 'config', cacheConfig);
             cacheConfig = [];

@@ -31,8 +31,23 @@ def reduce_indices(values, limit):
     return np.unique(indices)
 
 
+def sample_count(value):
+    """Normalize exact MATLAB JSON numbers without truncating invalid counts."""
+    if isinstance(value, bool):
+        raise ValueError("波形采样点数不合法。")
+    if isinstance(value, int):
+        count = value
+    elif isinstance(value, float) and math.isfinite(value) and value.is_integer():
+        count = int(value)
+    else:
+        raise ValueError("波形采样点数不合法。")
+    if count <= 0:
+        raise ValueError("波形采样点数不合法。")
+    return count
+
+
 def read_waveform(folder, scope_id, start=None, end=None, limit=3000):
-    if scope_id not in {"voltage", "current", "switch", "model_input"}:
+    if scope_id not in {"voltage", "current", "switch", "tracking", "model_input"}:
         raise ValueError("示波器不存在。")
     if (
         isinstance(limit, bool)
@@ -66,9 +81,10 @@ def read_waveform(folder, scope_id, start=None, end=None, limit=3000):
         if not re.fullmatch(rf"{scope_id}_\d+\.bin", filename):
             raise ValueError("波形文件索引不合法。")
         path = folder / filename
-        if path.stat().st_size != row["count"] * 16:
+        count = sample_count(row.get("count"))
+        if path.stat().st_size != count * 16:
             raise ValueError("波形数据不完整，请重新仿真。")
-        data = np.memmap(path, dtype="<f8", mode="r", shape=(row["count"], 2))
+        data = np.memmap(path, dtype="<f8", mode="r", shape=(count, 2))
         left = max(0, int(np.searchsorted(data[:, 0], start, side="left")) - 1)
         right = min(len(data), int(np.searchsorted(data[:, 0], end, side="right")) + 1)
         window = data[left:right]
@@ -79,7 +95,7 @@ def read_waveform(folder, scope_id, start=None, end=None, limit=3000):
                 "id": row["id"],
                 "label": row["label"],
                 "group": row["group"],
-                "sample_count": row["count"],
+                "sample_count": count,
                 "visible_count": len(window),
                 "time": samples[:, 0].tolist(),
                 "values": [

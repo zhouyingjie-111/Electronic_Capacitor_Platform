@@ -54,7 +54,7 @@ for k = 1:numel(scopes)
                 end
                 movefile(pending, fullfile(folder, filename), 'f');
                 channels(number) = struct('id', number, 'label', label, 'group', port, ...
-                    'count', numel(time), 'file', filename);
+                    'count', uint64(numel(time)), 'file', filename);
                 first = min(first, time(1));
                 last = max(last, time(end));
             end

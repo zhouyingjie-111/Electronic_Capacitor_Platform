@@ -1,12 +1,12 @@
 <div align="center">
 
-# AI + Power Electronics Platform
+# Electronic_Capacitor_Platform
 
 **脉冲平抑系统强瞬变电流高精度跟踪控制与电容阵列单体参数辨识**
 
 将数据、算法、仿真与硬件监测连接在同一个研究界面中。
 
-[![Website checks](https://github.com/zhouyingjie-111/AI-Power-Electronics-Platform/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/zhouyingjie-111/AI-Power-Electronics-Platform/actions/workflows/check.yml)
+[![Website checks](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/actions/workflows/check.yml)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?style=flat-square)](requirements.txt)
 [![Windows x64](https://img.shields.io/badge/Platform-Windows_x64-5B7CBA?style=flat-square)](#快速开始)
 [![MIT License](https://img.shields.io/badge/License-MIT-7486A6?style=flat-square)](LICENSE)
@@ -72,8 +72,8 @@
 在仓库页面选择 **Code → Download ZIP** 并完整解压，或执行：
 
 ```powershell
-git clone https://github.com/zhouyingjie-111/AI-Power-Electronics-Platform.git
-cd AI-Power-Electronics-Platform
+git clone https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform.git
+cd Electronic_Capacitor_Platform
 ```
 
 当前维护环境为 **Windows x64 + Python 3.10（64 位）**。使用 VS Code 调试时，安装 Microsoft 的 Python 与 Python Debugger 扩展。
@@ -113,7 +113,7 @@ py -3.10 -m venv .venv
 .\.venv\Scripts\python.exe run.py --no-browser
 ```
 
-修改 Python 源码后停止并重新启动服务；修改页面样式或脚本后刷新浏览器。
+修改 Python 源码后停止并重新启动服务；修改页面样式或脚本后刷新浏览器。工程使用相对路径，可整体移动；文件夹名称为 `Electronic_Capacitor_Platform`。
 
 </details>
 
@@ -164,7 +164,7 @@ D_T_UP_given, D_T_DOWN_given, PWM_S_UP_first, PWM_S_DOWN_first
 
 在对应功能的“仿真验证”页选择模型、设置仿真时间和参数，再打开或运行模型。快速追踪提供 PI、ANN、自定义控制三种入口；电容辨识使用独立的 CNN 仿真模型。
 
-运行后可查看进度和示波器波形。**仅查看模型时不会启动仿真**；快速追踪的已有仿真记录可独立展开。
+运行后可查看进度和示波器波形。快速追踪提供“电压”“电流”“开关”和“追踪情况”四个示波器入口。**仅查看模型时不会启动仿真**；快速追踪的已有仿真记录可独立展开。
 
 ### 串口通信
 
@@ -223,8 +223,8 @@ CPU / NPU 控制工程与导入步骤见下方“DSP 控制工程”。仓库中
 
 | 工程 | ANN 推理实现 | CNN 参数辨识 | 工程入口 |
 | :--- | :--- | :--- | :--- |
-| **CPU 版本** | CPU 执行配套模型库，控制侧取输出 `[0]` 作为 DTgiven | CPU 后台分步执行 | [`PI_ANN_CNN_SCI_CPU`](firmware/PI_ANN_CNN_SCI_CPU) |
-| **NPU 版本** | NPU 执行配套 ANN，CPU 负责输入归一化、完成处理与结果反归一化 | 仍由 CPU 后台分步执行 | [`PI_ANN_CNN_SCI_NPU`](firmware/PI_ANN_CNN_SCI_NPU) |
+| **CPU 版本** | CPU 执行配套模型库，控制侧取输出 `[0]` 作为 DTgiven | CPU 后台分步执行 | [`PI_ANN_CNN_SCI_CPU`](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/tree/main/firmware/PI_ANN_CNN_SCI_CPU) |
+| **NPU 版本** | NPU 执行配套 ANN，CPU 负责输入归一化、完成处理与结果反归一化 | 仍由 CPU 后台分步执行 | [`PI_ANN_CNN_SCI_NPU`](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/tree/main/firmware/PI_ANN_CNN_SCI_NPU) |
 
 两套工程保留附件中的控制源文件、模型库、链接脚本、SysConfig 与 CCS 工程配置；不收录构建输出和编辑器缓存。原有 [`PI_ANN_CNN_SCI_Web_Monitor`](firmware/PI_ANN_CNN_SCI_Web_Monitor) 保留为先前串口监测工程。
 
@@ -241,26 +241,31 @@ CPU / NPU 控制工程与导入步骤见下方“DSP 控制工程”。仓库中
 ADC 中断执行采样、PI 更新与 PWM 写入，主循环优先处理 ANN 请求；没有待处理 ANN 请求时，再推进一小步电容辨识和串口轮询。
 
 ```mermaid
-flowchart TD
-    BOOT["上电 / 复位"] --> INIT["Device、GPIO、PIE 与 Board 初始化"]
-    INIT --> SETUP["ADC 标定、PI 状态、Timer0、CNN 与串口初始化"]
-    SETUP --> ENABLE["启用中断"]
-    ENABLE --> LOOP{"ANN 启动条件满足且有待处理请求？"}
-    LOOP -->|是| SNAP["短临界区读取该方向的输入快照"]
-    SNAP --> INFER["NN_runOnce：CPU 或 NPU 推理"]
-    INFER --> VALID{"返回成功且 DTgiven 在允许范围内？"}
-    VALID -->|是| SAVE["更新上升 / 下降占空比缓存与有效标志"]
-    VALID -->|否| KEEP["不发布本次无效结果"]
-    SAVE --> FREE{"仍有 ANN 请求？"}
-    KEEP --> FREE
-    LOOP -->|否| FREE
-    FREE -->|有| LOOP
-    FREE -->|无| CAP["CapBackground_Task：分步辨识与结果发布"]
-    CAP --> SERIAL["再次检查请求，允许时执行 PortalSCI_poll"]
-    SERIAL --> LOOP
-    ENABLE -.-> ADC["ADC 中断：采样 → 标定滤波 → 边沿检测 → PI / PWM → 采样入队"]
-    ADC -.-> REQ["Vin 达到启动门槛后，边沿快照置 AnnUpdateReq"]
-    REQ -.-> LOOP
+flowchart LR
+    subgraph INIT["1 · 启动与初始化"]
+        direction TB
+        A["上电 / 复位"] --> B["Device / GPIO / PIE / Board"]
+        B --> C["ADC 标定、PI 状态、Timer0"]
+        C --> D["CNN 与串口初始化 / 启用中断"]
+    end
+    subgraph REALTIME["2 · ADC 实时控制"]
+        direction TB
+        E["采样 / 标定 / 滤波"] --> F["边沿检测与输入快照"]
+        F --> G["双环 PI / 有效 ANN 缓存选择"]
+        G --> H["写入 PWM / 采样入队"]
+        H -.下一周期.-> E
+    end
+    subgraph BACKGROUND["3 · 主循环协同调度"]
+        direction TB
+        I{"有待处理 ANN 请求？"} -->|是| J["CPU 或 NPU 推理 / 校验 / 更新缓存"]
+        I -->|无| K["分步 CNN 辨识与结果发布"]
+        J --> L["空闲时串口轮询"]
+        K --> L
+        L -.持续循环.-> I
+    end
+    INIT --> REALTIME
+    REALTIME -.快照与请求.-> BACKGROUND
+    BACKGROUND -.有效占空比缓存.-> REALTIME
 ```
 
 当前附件在滤波 `Vin ≥ 265 V` 后置位 `AnnStartEnable`。ANN 输入顺序为峰值电流、边沿时间、两路电压和上升/下降标志；对应 `g_nnInput[0..4]`。输入快照在边沿保存，主循环计算并更新缓存，实时中断不等待神经网络计算结束。
@@ -333,7 +338,7 @@ NPU 版本通过 `ann_npu_adapter.c` 启动配套硬件模型；`nn_npu_platform
 ## 项目结构
 
 ```text
-AI-Power-Electronics-Platform/
+Electronic_Capacitor_Platform/
 ├─ run.py                       # 启动、端口选择与自检入口
 ├─ settings.py                  # 配置读取与路径规范化
 ├─ config.example.json          # 可共享的配置模板
@@ -376,9 +381,9 @@ AI-Power-Electronics-Platform/
 .\.venv\Scripts\python.exe -m unittest discover -s webapp/tests -p "test_*.py" -q
 ```
 
-[GitHub Actions](https://github.com/zhouyingjie-111/AI-Power-Electronics-Platform/actions/workflows/check.yml) 在 Windows / Python 3.10 下执行依赖安装、页面自检和回归测试。测试覆盖配置、上传与下载、任务状态、对话及数据维护等路径，不连接真实开发板、不调用收费 API，也不运行真实 MATLAB 或 TI 编译。历史 NPU 产物相关检查在缺少对应产物时会明确跳过。
+[GitHub Actions](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/actions/workflows/check.yml) 在 Windows / Python 3.10 下执行依赖安装、页面自检和回归测试。测试覆盖配置、上传与下载、任务状态、对话及数据维护等路径，不连接真实开发板、不调用收费 API，也不运行真实 MATLAB 或 TI 编译。历史 NPU 产物相关检查在缺少对应产物时会明确跳过。
 
-欢迎通过 [Issues](https://github.com/zhouyingjie-111/AI-Power-Electronics-Platform/issues) 提交问题与建议。报告问题时请附上所处页面、操作步骤、Python / 工具版本及去除敏感信息后的错误日志。
+欢迎通过 [Issues](https://github.com/zhouyingjie-111/Electronic_Capacitor_Platform/issues) 提交问题与建议。报告问题时请附上所处页面、操作步骤、Python / 工具版本及去除敏感信息后的错误日志。
 
 <details>
 <summary><strong>常见问题与本机文件</strong></summary>

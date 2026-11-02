@@ -77,3 +77,47 @@ class ScopeWaveformTests(unittest.TestCase):
             (folder / "current_1.bin").write_bytes(b"partial")
             with self.assertRaises(ValueError):
                 read_waveform(folder, "current")
+
+
+class MatlabScopeMetadataTests(unittest.TestCase):
+    fixture = ScopeWaveformTests.fixture
+    """Regressions for large MATLAB exports and the tracking scope allowlist."""
+
+    def test_integral_scientific_count_is_accepted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder, raw = self.fixture(directory)
+            path = folder / "index.json"
+            index = json.loads(path.read_text(encoding="utf-8"))
+            index[0]["channels"][0]["count"] = float(len(raw))
+            path.write_text(json.dumps(index), encoding="utf-8")
+            result = read_waveform(folder, "current")["channels"][0]
+            self.assertEqual(result["sample_count"], len(raw))
+            self.assertIsInstance(result["sample_count"], int)
+            self.assertIn(22, result["values"])
+            # MATLAB can emit scientific notation once sample counts grow.
+            path.write_text(path.read_text().replace("20000.0", "2e4"), encoding="utf-8")
+            self.assertEqual(read_waveform(folder, "current")["channels"][0]["sample_count"], 20000)
+
+    def test_invalid_sample_counts_are_rejected_without_truncation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder, _ = self.fixture(directory)
+            path = folder / "index.json"
+            index = json.loads(path.read_text(encoding="utf-8"))
+            for count in (True, 20000.5, -1, 0, float("nan"), float("inf"), "20000", None):
+                with self.subTest(count=count):
+                    index[0]["channels"][0]["count"] = count
+                    path.write_text(json.dumps(index), encoding="utf-8")
+                    with self.assertRaises(ValueError):
+                        read_waveform(folder, "current")
+
+    def test_tracking_scope_uses_the_same_peak_preserving_reader(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder, _ = self.fixture(directory)
+            index = json.loads((folder / "index.json").read_text(encoding="utf-8"))
+            index[0].update(id="tracking", name="追踪情况")
+            index[0]["channels"][0]["file"] = "tracking_1.bin"
+            (folder / "current_1.bin").rename(folder / "tracking_1.bin")
+            (folder / "index.json").write_text(json.dumps(index), encoding="utf-8")
+            result = read_waveform(folder, "tracking", limit=128)
+            self.assertEqual(result["name"], "追踪情况")
+            self.assertIn(22, result["channels"][0]["values"])

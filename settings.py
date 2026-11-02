@@ -72,8 +72,7 @@ def load_config(root=ROOT, environment=None):
 
 def configure():
     """在导入业务服务前调用；环境优先级在 load_config 中统一处理。"""
-    # PYTHONIOENCODING set after process startup does not change existing
-    # streams. Reconfigure them for English Windows/CI terminals as well.
+    # Reconfigure existing streams on English Windows terminals as well.
     for stream in (sys.stdout, sys.stderr):
         reconfigure = getattr(stream, "reconfigure", None)
         if callable(reconfigure):

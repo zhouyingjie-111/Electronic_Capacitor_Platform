@@ -303,3 +303,27 @@ class SimulationRunnerTests(unittest.TestCase):
             self.assertFalse(done["diagram_ready"])
             self.assertEqual(done["state"], "failed")
             self.assertNotIn("start", engine.calls)
+
+
+class MatlabConsoleTests(unittest.TestCase):
+    def test_matlab_output_is_logged_and_real_errors_propagate(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            runner = SimulationRunner({}, root)
+            runner.jobs["console-test"] = {"_folder": root}
+            runner.active_id = "console-test"
+            console = io.StringIO()
+            def noisy_call(*, stdout, stderr, **kwargs):
+                stdout.write("Simulink cache artifact created\n")
+                stderr.write("Warning: test warning\n")
+                return "ok"
+            with contextlib.redirect_stdout(console), contextlib.redirect_stderr(console):
+                self.assertEqual(runner._matlab(noisy_call, nargout=1), "ok")
+            self.assertEqual(console.getvalue(), "")
+            self.assertIn("Warning: test warning", (root / "matlab-output.log").read_text())
+            def failed_call(**kwargs):
+                raise RuntimeError("real solver failure")
+            with self.assertRaisesRegex(RuntimeError, "real solver failure"):
+                runner._matlab(failed_call, nargout=1)
